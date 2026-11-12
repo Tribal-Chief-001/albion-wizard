@@ -32,7 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenManifest,
 }) => {
   return (
-    <header className="border-b border-slate-800 bg-[#0e131f]/95 backdrop-blur sticky top-0 z-40 px-3 sm:px-4 lg:px-8 py-2 sm:py-2.5 w-full max-w-full overflow-hidden">
+    <header className="border-b border-slate-800 bg-[#0e131f]/95 backdrop-blur sticky top-0 z-40 px-2 sm:px-4 lg:px-8 py-1.5 sm:py-2.5 w-full max-w-full overflow-hidden">
       {/* Top Utility Bar */}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 md:gap-3 w-full min-w-0">
         {/* Row 1 on Mobile: Brand + Mobile Quick Actions (Transport & Sound) */}
@@ -98,13 +98,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Row 2 on Mobile / Right Controls on Desktop (md+) */}
         <div className="flex items-center justify-between md:justify-end gap-1 sm:gap-1.5 md:gap-2 text-xs w-full md:w-auto min-w-0">
           {/* Cluster Switcher */}
-          <div className="flex items-center gap-0.5 sm:gap-1 bg-slate-900 border border-slate-700/80 rounded-lg p-0.5 text-xs min-h-[36px] flex-shrink-0">
+          <div className="flex items-center gap-0.5 sm:gap-1 bg-slate-900 border border-slate-700/80 rounded-lg p-0.5 text-xs min-h-[32px] sm:min-h-[36px] flex-shrink-0">
             <Globe className="h-3.5 w-3.5 text-slate-400 ml-1 sm:ml-1.5 hidden md:block flex-shrink-0" />
             {(['west', 'europe', 'east'] as Cluster[]).map((c) => (
               <button
                 key={c}
                 onClick={() => onClusterChange(c)}
-                className={`px-1.5 sm:px-2 py-1 rounded text-xs font-medium transition-all ${
+                className={`px-1 sm:px-2 py-0.5 sm:py-1 rounded text-[11px] sm:text-xs font-medium transition-all ${
                   cluster === c
                     ? 'bg-amber-500 text-slate-950 font-semibold shadow-sm'
                     : 'text-slate-400 hover:text-slate-200'
@@ -119,23 +119,23 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Gold Price Indicator */}
           {goldPrice > 0 && (
-            <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-900/90 border border-amber-500/30 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs text-amber-300 font-mono min-h-[36px] flex-shrink-0">
-              <Coins className="h-3.5 w-3.5 text-amber-400 flex-shrink-0" />
-              <span>1G={formatSilver(goldPrice)}</span>
+            <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-900/90 border border-amber-500/30 px-1.5 sm:px-2.5 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs text-amber-300 font-mono min-h-[32px] sm:min-h-[36px] flex-shrink-0">
+              <Coins className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-amber-400 flex-shrink-0" />
+              <span className="hidden sm:inline">1G=</span><span>{formatSilver(goldPrice)}</span>
             </div>
           )}
 
           {/* Premium Toggle */}
           <button
             onClick={onPremiumToggle}
-            className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium border min-h-[36px] transition-all flex-shrink-0 ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-medium border min-h-[32px] sm:min-h-[36px] transition-all flex-shrink-0 ${
               hasPremium
                 ? 'bg-amber-500/15 border-amber-500/40 text-amber-300'
                 : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-slate-200'
             }`}
             title={hasPremium ? 'Premium Active (4% Tax)' : 'No Premium (8% Tax)'}
           >
-            <Crown className={`h-3.5 w-3.5 flex-shrink-0 ${hasPremium ? 'text-amber-400' : 'text-slate-400'}`} />
+            <Crown className={`h-3 sm:h-3.5 w-3 sm:w-3.5 flex-shrink-0 ${hasPremium ? 'text-amber-400' : 'text-slate-400'}`} />
             <span>{hasPremium ? '4% Prem' : '8% Free'}</span>
           </button>
 

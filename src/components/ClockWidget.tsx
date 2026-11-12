@@ -61,11 +61,11 @@ export const ClockWidget: React.FC = () => {
         aria-expanded={isOpen}
         aria-haspopup="true"
         title={`Current Clock: ${desktopTime} (${activeOption.label}) - Click to switch timezone`}
-        className={`group flex items-center min-h-[36px] rounded-lg border transition-all text-xs select-none ${
+        className={`group flex items-center min-h-[32px] sm:min-h-[36px] rounded-lg border transition-all text-xs select-none ${
           isOpen
             ? 'bg-slate-900 border-amber-500 text-amber-300 shadow-md shadow-amber-500/10'
             : 'bg-slate-900/90 border-slate-700/80 hover:border-amber-500/50 text-slate-200 hover:text-white'
-        } px-2 sm:px-2.5 py-1`}
+        } px-1.5 sm:px-2.5 py-1`}
       >
         {/* Mobile View (< md): Ultra-compact pill strictly engineered to prevent header blowout */}
         <div className="flex md:hidden items-center gap-1 font-mono">
