@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Cluster, FilterState, AODPPriceRecord } from './types';
+import { Cluster, FilterState, AODPPriceRecord, NavigationTab, ManifestItem, ArbitrageOpportunity } from './types';
 import { ALBION_CATALOG } from './data/items';
 import { fetchGoldPrice, fetchPricesBatch, computeArbitrage } from './services/aodp';
 import { playAlertChime } from './utils/audio';
@@ -8,6 +8,9 @@ import { StatsBanner } from './components/StatsBanner';
 import { FilterBar } from './components/FilterBar';
 import { ArbitrageCard } from './components/ArbitrageCard';
 import { FactionMatrixModal } from './components/FactionMatrixModal';
+import { TransportManifestDrawer } from './components/TransportManifestDrawer';
+import { RefiningLab } from './components/RefiningLab';
+import { GoldMacroOracle } from './components/GoldMacroOracle';
 import { Sparkles, AlertCircle, RefreshCw, Check } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -15,8 +18,29 @@ export const App: React.FC = () => {
   const [goldPrice, setGoldPrice] = useState<number>(0);
   const [hasPremium, setHasPremium] = useState<boolean>(true);
   const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<NavigationTab>('black_market');
+
   const [isFactionModalOpen, setIsFactionModalOpen] = useState<boolean>(false);
+  const [isManifestOpen, setIsManifestOpen] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Transport Run Manifest Cart with LocalStorage persistence
+  const [manifestItems, setManifestItems] = useState<ManifestItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('albion_wizard_manifest');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('albion_wizard_manifest', JSON.stringify(manifestItems));
+    } catch (e) {
+      console.warn('Failed to save manifest to localStorage:', e);
+    }
+  }, [manifestItems]);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -41,6 +65,59 @@ export const App: React.FC = () => {
     setTimeout(() => {
       setToastMessage((prev) => (prev === itemName ? null : prev));
     }, 2500);
+  }, []);
+
+  // Manifest Cart Handlers
+  const handleAddToManifest = useCallback((opp: ArbitrageOpportunity) => {
+    setManifestItems((prev) => {
+      const existing = prev.find(
+        (i) =>
+          i.opp.item.rawId === opp.item.rawId &&
+          i.opp.quality === opp.quality &&
+          i.opp.sourceCity === opp.sourceCity
+      );
+      if (existing) {
+        return prev.map((i) =>
+          i.opp.item.rawId === opp.item.rawId &&
+          i.opp.quality === opp.quality &&
+          i.opp.sourceCity === opp.sourceCity
+            ? { ...i, quantity: i.quantity + 1 }
+            : i
+        );
+      }
+      return [...prev, { opp, quantity: 1 }];
+    });
+    setToastMessage(`Added "${opp.item.name}" to Transport Run`);
+    setTimeout(() => setToastMessage(null), 2000);
+  }, []);
+
+  const handleUpdateQuantity = useCallback(
+    (rawId: string, quality: number, city: string, delta: number) => {
+      setManifestItems((prev) =>
+        prev
+          .map((i) => {
+            if (i.opp.item.rawId === rawId && i.opp.quality === quality && i.opp.sourceCity === city) {
+              const newQty = i.quantity + delta;
+              return newQty > 0 ? { ...i, quantity: newQty } : null;
+            }
+            return i;
+          })
+          .filter(Boolean) as ManifestItem[]
+      );
+    },
+    []
+  );
+
+  const handleRemoveManifestItem = useCallback((rawId: string, quality: number, city: string) => {
+    setManifestItems((prev) =>
+      prev.filter(
+        (i) => !(i.opp.item.rawId === rawId && i.opp.quality === quality && i.opp.sourceCity === city)
+      )
+    );
+  }, []);
+
+  const handleClearManifest = useCallback(() => {
+    setManifestItems([]);
   }, []);
 
   // Sync premium filter with top navbar premium toggle
@@ -121,82 +198,111 @@ export const App: React.FC = () => {
         onPremiumToggle={() => setHasPremium(!hasPremium)}
         audioEnabled={audioEnabled}
         onAudioToggle={() => setAudioEnabled(!audioEnabled)}
-        onOpenFactionModal={() => setIsFactionModalOpen(true)}
+        activeTab={activeTab}
+        onTabChange={(tab) => {
+          if (tab === 'faction_matrix') {
+            setIsFactionModalOpen(true);
+          } else {
+            setActiveTab(tab);
+          }
+        }}
+        manifestCount={manifestItems.reduce((acc, i) => acc + i.quantity, 0)}
+        onOpenManifest={() => setIsManifestOpen(true)}
       />
 
-      {/* Main Content Area */}
+      {/* Main Suite Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
-        {/* Statistics Dashboard Banner */}
-        <StatsBanner
-          opportunities={opportunities}
-          isLoading={isLoading}
-          onRefresh={scanMarket}
-          lastUpdated={lastUpdated}
-          totalCatalogCount={ALBION_CATALOG.length}
-        />
+        {/* TAB 1: Black Market Predator (System 2 & 5) */}
+        {activeTab === 'black_market' && (
+          <>
+            {/* Statistics Dashboard Banner */}
+            <StatsBanner
+              opportunities={opportunities}
+              isLoading={isLoading}
+              onRefresh={scanMarket}
+              lastUpdated={lastUpdated}
+              totalCatalogCount={ALBION_CATALOG.length}
+            />
 
-        {/* Filter & Search Bar */}
-        <FilterBar filters={filters} onChange={setFilters} />
+            {/* Filter & Search Bar */}
+            <FilterBar filters={filters} onChange={setFilters} />
 
-        {/* Arbitrage Opportunities Grid */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-amber-400" />
-              <span>Profitable Arbitrage Spreads ({opportunities.length})</span>
-            </h2>
-            <span className="text-xs text-slate-500 font-mono">
-              Click any card to copy in-game search name
-            </span>
-          </div>
+            {/* Arbitrage Opportunities Grid */}
+            <section className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-amber-400" />
+                  <span>Profitable Arbitrage Spreads ({opportunities.length})</span>
+                </h2>
+                <span className="text-xs text-slate-500 font-mono">
+                  Click card to copy name &bull; Click "Add Run" to build transport haul
+                </span>
+              </div>
 
-          {isLoading && opportunities.length === 0 ? (
-            <div className="bg-[#121826] border border-slate-800 rounded-2xl p-12 text-center space-y-3">
-              <RefreshCw className="h-8 w-8 text-amber-400 animate-spin mx-auto" />
-              <p className="text-slate-300 font-medium text-sm">
-                Scanning regional order books on {cluster.toUpperCase()} cluster...
-              </p>
-              <p className="text-xs text-slate-500">
-                Fetching live market orders from Albion Online Data Project (AODP)...
-              </p>
-            </div>
-          ) : opportunities.length === 0 ? (
-            <div className="bg-[#121826] border border-slate-800 rounded-2xl p-12 text-center space-y-3">
-              <AlertCircle className="h-8 w-8 text-slate-500 mx-auto" />
-              <h3 className="text-slate-300 font-semibold text-base">
-                No matching opportunities found with current filters
-              </h3>
-              <p className="text-xs text-slate-500 max-w-md mx-auto">
-                Try widening your filters (e.g. decrease Min Profit, lower Min ROI, or increase Max Age to 24 Hours) to discover active market spreads.
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {opportunities.map((opp, idx) => (
-                <ArbitrageCard
-                  key={`${opp.item.rawId}_${opp.quality}_${opp.sourceCity}_${idx}`}
-                  opp={opp}
-                  onCopied={handleCardCopied}
-                />
-              ))}
-            </div>
-          )}
-        </section>
+              {isLoading && opportunities.length === 0 ? (
+                <div className="bg-[#121826] border border-slate-800 rounded-2xl p-12 text-center space-y-3">
+                  <RefreshCw className="h-8 w-8 text-amber-400 animate-spin mx-auto" />
+                  <p className="text-slate-300 font-medium text-sm">
+                    Scanning regional order books on {cluster.toUpperCase()} cluster...
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    Fetching live market orders from Albion Online Data Project (AODP)...
+                  </p>
+                </div>
+              ) : opportunities.length === 0 ? (
+                <div className="bg-[#121826] border border-slate-800 rounded-2xl p-12 text-center space-y-3">
+                  <AlertCircle className="h-8 w-8 text-slate-500 mx-auto" />
+                  <h3 className="text-slate-300 font-semibold text-base">
+                    No matching opportunities found with current filters
+                  </h3>
+                  <p className="text-xs text-slate-500 max-w-md mx-auto">
+                    Try widening your filters (e.g. decrease Min Profit, lower Min ROI, or increase Max Age to 24 Hours) to discover active market spreads.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {opportunities.map((opp, idx) => (
+                    <ArbitrageCard
+                      key={`${opp.item.rawId}_${opp.quality}_${opp.sourceCity}_${idx}`}
+                      opp={opp}
+                      onCopied={handleCardCopied}
+                      onAddToManifest={handleAddToManifest}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+          </>
+        )}
+
+        {/* TAB 3: 700/700 Focus & Refining Lab (System 3 & 4) */}
+        {activeTab === 'refining_lab' && <RefiningLab />}
+
+        {/* TAB 4: Gold Macro & Patch Front-Running Oracle (System 6 & 7) */}
+        {activeTab === 'macro_oracle' && <GoldMacroOracle cluster={cluster} goldPrice={goldPrice} />}
       </main>
 
-      {/* Faction Modal (System 1) */}
+      {/* System 1: Faction Matrix Modal */}
       <FactionMatrixModal
         isOpen={isFactionModalOpen}
         onClose={() => setIsFactionModalOpen(false)}
       />
 
-      {/* Floating Clipboard Toast */}
+      {/* System 2: Transport Run Manifest Drawer */}
+      <TransportManifestDrawer
+        isOpen={isManifestOpen}
+        onClose={() => setIsManifestOpen(false)}
+        items={manifestItems}
+        onUpdateQuantity={handleUpdateQuantity}
+        onRemoveItem={handleRemoveManifestItem}
+        onClearAll={handleClearManifest}
+      />
+
+      {/* Floating Clipboard / Action Toast */}
       {toastMessage && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-900/95 border border-amber-500/50 shadow-2xl shadow-amber-500/20 text-xs text-white backdrop-blur animate-in fade-in slide-in-from-bottom-3 duration-200">
           <Check className="h-4 w-4 text-emerald-400 flex-shrink-0" />
-          <span>
-            Copied <strong className="text-amber-400 font-semibold">{toastMessage}</strong> to clipboard for in-game search!
-          </span>
+          <span>{toastMessage}</span>
         </div>
       )}
 
@@ -206,12 +312,12 @@ export const App: React.FC = () => {
           <div className="flex items-center gap-2">
             <span className="font-mono font-bold text-slate-300">Albion Wizard</span>
             <span>&bull;</span>
-            <span>100% Free & Open-Source</span>
+            <span>Systems 1 through 7 Online</span>
             <span>&bull;</span>
-            <span className="text-emerald-400">EAC & ToS Safe</span>
+            <span className="text-emerald-400">100% EAC & ToS Safe</span>
           </div>
           <div>
-            Powered by community data from the <a href="https://www.albion-online-data.com" target="_blank" rel="noreferrer" className="text-amber-400 hover:underline">Albion Online Data Project (AODP)</a>.
+            Powered by live market telemetry from the <a href="https://www.albion-online-data.com" target="_blank" rel="noreferrer" className="text-amber-400 hover:underline">Albion Online Data Project (AODP)</a>.
           </div>
         </div>
       </footer>

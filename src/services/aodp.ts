@@ -32,6 +32,23 @@ export async function fetchGoldPrice(cluster: Cluster): Promise<number> {
   return 0;
 }
 
+export async function fetchGoldHistory(cluster: Cluster, count = 30): Promise<{ price: number; timestamp: string }[]> {
+  const baseUrl = CLUSTER_URLS[cluster];
+  try {
+    const res = await fetch(`${baseUrl}/api/v2/stats/gold.json?count=${count}`, {
+      headers: { 'Accept': 'application/json' },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    if (Array.isArray(data)) {
+      return data.map((d) => ({ price: d.price || 0, timestamp: d.timestamp || '' }));
+    }
+  } catch (err) {
+    console.warn('Failed to fetch gold history:', err);
+  }
+  return [];
+}
+
 export function formatPriceAge(isoDateString: string): { label: string; ageHours: number } {
   if (!isoDateString || isoDateString.startsWith('0001-01-01')) {
     return { label: 'Unknown', ageHours: 9999 };

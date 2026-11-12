@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { ArbitrageOpportunity } from '../types';
-import { Copy, Check, ArrowRight, Flame } from 'lucide-react';
+import { Copy, Check, ArrowRight, Flame, Plus } from 'lucide-react';
 import { formatSilver, QUALITY_COLORS, QUALITY_NAMES, TIER_COLORS } from '../utils/quality';
 
 interface ArbitrageCardProps {
   opp: ArbitrageOpportunity;
   onCopied?: (name: string) => void;
+  onAddToManifest?: (opp: ArbitrageOpportunity) => void;
 }
 
-export const ArbitrageCard: React.FC<ArbitrageCardProps> = ({ opp, onCopied }) => {
+export const ArbitrageCard: React.FC<ArbitrageCardProps> = ({ opp, onCopied, onAddToManifest }) => {
   const [copied, setCopied] = useState(false);
+  const [added, setAdded] = useState(false);
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -17,6 +19,13 @@ export const ArbitrageCard: React.FC<ArbitrageCardProps> = ({ opp, onCopied }) =
     setCopied(true);
     onCopied?.(opp.item.name);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleAdd = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onAddToManifest?.(opp);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
   };
 
   const spriteUrl = `https://render.albiononline.com/v1/item/${opp.item.rawId}.png?quality=${opp.quality}`;
@@ -132,18 +141,17 @@ export const ArbitrageCard: React.FC<ArbitrageCardProps> = ({ opp, onCopied }) =
       </div>
 
       {/* Profit Footer */}
-      <div className="flex items-center justify-between pt-2 border-t border-slate-800/70 text-xs">
+      <div className="flex items-center justify-between pt-2.5 border-t border-slate-800/70 text-xs gap-2">
         <div>
-          <span className="text-[10px] text-slate-400 block">Estimated Net Profit</span>
+          <span className="text-[10px] text-slate-400 block">Net Profit</span>
           <span className="text-base font-bold font-mono text-amber-400">
             +{formatSilver(opp.netProfit)}
           </span>
         </div>
 
-        <div className="text-right">
-          <span className="text-[10px] text-slate-400 block">ROI Spread</span>
+        <div className="flex items-center gap-1.5">
           <span
-            className={`text-sm font-bold font-mono px-2 py-0.5 rounded ${
+            className={`text-xs font-bold font-mono px-2 py-1 rounded ${
               opp.roiPercentage >= 100
                 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                 : 'bg-slate-800 text-slate-200'
@@ -151,6 +159,19 @@ export const ArbitrageCard: React.FC<ArbitrageCardProps> = ({ opp, onCopied }) =
           >
             +{opp.roiPercentage}%
           </span>
+
+          <button
+            onClick={handleAdd}
+            className={`flex items-center gap-1 px-2.5 py-1 rounded border text-[11px] font-medium transition-all ${
+              added
+                ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300'
+                : 'bg-slate-800/90 hover:bg-slate-700 border-slate-700 text-slate-300 hover:text-white'
+            }`}
+            title="Add to Transport Run Manifest"
+          >
+            {added ? <Check className="h-3 w-3 text-emerald-400" /> : <Plus className="h-3 w-3 text-amber-400" />}
+            <span>{added ? 'Added' : 'Add Run'}</span>
+          </button>
         </div>
       </div>
     </div>

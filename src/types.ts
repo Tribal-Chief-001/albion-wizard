@@ -4,6 +4,8 @@ export type RoyalCity = 'Fort Sterling' | 'Thetford' | 'Lymhurst' | 'Bridgewatch
 
 export type DestinationCity = 'Caerleon' | 'Black Market';
 
+export type NavigationTab = 'black_market' | 'faction_matrix' | 'refining_lab' | 'macro_oracle';
+
 export type ItemCategory = 
   | 'all'
   | 'weapons_melee'
@@ -22,6 +24,7 @@ export interface AlbionItem {
   enchantment: number; // 0 to 3
   category: ItemCategory;
   rawId: string; // Full formatted ID for API, e.g. T6_MAIN_SWORD@2
+  weight?: number; // approximate kg weight
 }
 
 export interface AODPPriceRecord {
@@ -54,6 +57,11 @@ export interface ArbitrageOpportunity {
   isStarvation: boolean; // True if ROI >= 150% and buy order is active
 }
 
+export interface ManifestItem {
+  opp: ArbitrageOpportunity;
+  quantity: number;
+}
+
 export interface FilterState {
   search: string;
   category: ItemCategory;
@@ -65,4 +73,25 @@ export interface FilterState {
   hasPremium: boolean;
   maxAgeHours: number;
   starvationOnly: boolean;
+}
+
+export interface FactionHeartData {
+  city: RoyalCity;
+  heartName: string;
+  itemId: string;
+  pointsCost: number;
+  liveMarketPrice: number;
+  priceAge: string;
+}
+
+export type ResourceBiome = 'Wood' | 'Ore' | 'Fiber' | 'Hide' | 'Stone';
+
+export interface RefiningSpecState {
+  resource: ResourceBiome;
+  tier: number; // 4 to 8
+  enchantment: number; // 0 to 3
+  masterySpec: number; // 0 to 100
+  tierSpec: number; // 0 to 100
+  hasDailyBonus: boolean;
+  stationFeePer100: number; // Silver fee per 100 nutrition
 }
