@@ -1,0 +1,50 @@
+name: 💡 Feature Request & Economic Algorithm Proposal
+description: Suggest an enhancement, new economic calculator, or data visualization for Albion Wizard.
+title: "[FEAT]: "
+labels: ["enhancement", "proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea for a broken silver-printing system, a new statistical calculator, or a UI enhancement? Share it with the community!
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      description: What domain does this feature fall under?
+      options:
+        - Economic Algorithm / Arbitrage Math
+        - Transport Logistics & Risk Estimation
+        - Refining & Crafting Spec Calculator
+        - Black Zone & Hideout Integration
+        - Data Visualization / Financial Charts
+        - UI / UX / Sound / Accessibility
+        - Performance / Caching / Offline Mode
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: The Problem / Market Inefficiency
+      description: What gameplay friction or market inefficiency are you trying to solve?
+      placeholder: Describe why this feature is valuable for players.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution / Algorithm
+      description: Detailed description of the feature, including mathematical formulas if applicable.
+      placeholder: |
+        Describe how the feature should behave and what data it needs to compute.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Approaches Considered
+      description: Have you considered any alternative workarounds or existing third-party tools?

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Community Discussions
+    url: https://github.com/Tribal-Chief-001/albion-wizard/discussions
+    about: Ask questions, share market findings, and discuss Albion economic strategies.
+  - name: Terms of Service & Security
+    url: https://github.com/Tribal-Chief-001/albion-wizard/blob/main/SECURITY.md
+    about: Read our anti-cheat invariants and vulnerability disclosure guidelines.

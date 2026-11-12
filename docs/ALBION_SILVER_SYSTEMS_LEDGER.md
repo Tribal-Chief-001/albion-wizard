@@ -173,18 +173,42 @@ All systems designed under this project strictly adhere to Sandbox Interactive's
 
 ## 5. Implementation Roadmap
 
-* [ ] **Phase 1: Foundation & Core Arbitrage Engine**
+* [x] **Phase 1: Foundation & Core Arbitrage Engine**
   * Scaffold Vite + React + Tailwind TypeScript base.
   * Integrate AODP item ID mapping and localized English item names.
   * Implement Black Market Starvation Permutation Scanner (System 2).
   * Build responsive dark-mode UI with live sprite rendering and one-click copy.
-* [ ] **Phase 2: Faction & Safe-Zone Calculators**
+* [x] **Phase 2: Faction & Safe-Zone Calculators**
   * Implement Faction Point to Heart/Crest conversion matrix (System 1).
   * Implement +EV Quality Reroll simulator (System 5).
-* [ ] **Phase 3: Production & Compounding Suite**
+* [x] **Phase 3: Production & Compounding Suite**
   * Implement 700/700 SPF Refining & Crafting Calculator with city bonus support (System 3).
   * Implement Transmutation Bellman-Ford Negative Cycle finder (System 4).
-* [ ] **Phase 4: Cartel & Macro Intelligence**
+* [x] **Phase 4: Cartel & Macro Intelligence**
   * Implement Gold-Silver depth tracker and historical chart (System 7).
   * Implement Staging Server XML diff and patch anticipation tracker (System 6).
   * Finalize Cloudflare Pages / Vercel automated CI/CD pipeline.
+
+---
+
+## 6. Live 2025/2026 Meta Audit: Ground Truth & Endgame Amplifiers
+
+In Q1 2026, an exhaustive cross-reference against live game patches (Wild Blood, Foundations, and Horizon update cycles) verified the macroeconomic validity of the 7 Foundational Systems.
+
+### The Two Dead Traps in Current Albion
+1. **Island Laborer Estates (Post-Nerf Status):**
+   * *Status:* Heavily nerfed by Sandbox Interactive.
+   * *Why to Avoid:* Upfront capital to furnish T8 Guild Halls with 150% happiness trophies costs 150M–300M silver. With journal yield nerfs, break-even timelines have ballooned to 6–12 months of daily clicking.
+2. **Awakened .4 Weapon Rolling:**
+   * *Status:* Deliberate Silver Sink.
+   * *Why to Avoid:* Weapon "strain" mechanics escalate reroll fees into tens of millions of silver. Over 90% of players lose silver awakening weapons. **The only +EV angle is selling the raw fuel (Siphon Energy, Avalonian Energy, and Tracking Remnants) to the gamblers.**
+
+### The Three Overkill Endgame Amplifiers
+1. **The Transport Mammoth Yellow-Zone Loophole (Zero-Risk Arbitrage):**
+   * A Transport Mammoth hauls 40,000+ kg across 100% safe Yellow Zones between Royal Cities.
+   * Moving regional raw materials (e.g. Fort Sterling Ore to Thetford for the +40% refining bonus) generates 3.5M–6M pure profit per 15-minute run with 0% full-loot risk.
+2. **The "Dual Split" BZ HQ Crafting Meta (58.2% RRR):**
+   * *Rule:* Never refine in a Hideout (keep refining in Royal Cities for 53.9% RRR).
+   * *Rule:* Craft equipment in a high-power (Power 6–8, Quality 6) Black Zone Guild Headquarters, unlocking up to **58.2% RRR with focus**, recovering almost 6 out of every 10 expensive crafting inputs.
+3. **Faction Transport Contract Multiplier Runs:**
+   * Escalating raw Faction Point redemption into Trade Missions: 15 hearts deposit returns 18 hearts (+20%) in Yellow Zones, or 27 hearts (**+80% instant multiplier**) in Red Zones.
