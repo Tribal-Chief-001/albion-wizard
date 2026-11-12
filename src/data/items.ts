@@ -15,6 +15,7 @@ const ITEM_BASES: ItemBase[] = [
   { baseId: 'MAIN_SCIMITAR_MORGANA', name: 'Clarent Blade', category: 'weapons_melee', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: '2H_CLEAVER_HELL', name: 'Carving Sword', category: 'weapons_melee', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: '2H_DUALSCYTHE_HELL', name: 'Galatine Pair', category: 'weapons_melee', availableTiers: [4, 5, 6, 7, 8] },
+  { baseId: '2H_CLAYMORE_AVALON', name: 'Kingmaker', category: 'weapons_melee', availableTiers: [4, 5, 6, 7, 8] },
 
   // Melee - Axes
   { baseId: 'MAIN_AXE', name: 'Battleaxe', category: 'weapons_melee', availableTiers: [4, 5, 6, 7, 8] },
@@ -55,11 +56,14 @@ const ITEM_BASES: ItemBase[] = [
   { baseId: 'MAIN_FROSTSTAFF', name: 'Frost Staff', category: 'weapons_magic', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: '2H_FROSTSTAFF', name: 'Great Frost Staff', category: 'weapons_magic', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: '2H_ICEGAUNTLETS_HELL', name: 'Permafrost Prism', category: 'weapons_magic', availableTiers: [4, 5, 6, 7, 8] },
+  { baseId: '2H_SHAPESHIFTER_SET1', name: 'Prowling Staff', category: 'weapons_magic', availableTiers: [4, 5, 6, 7, 8] },
+  { baseId: '2H_SHAPESHIFTER_SET2', name: 'Rootbound Staff', category: 'weapons_magic', availableTiers: [4, 5, 6, 7, 8] },
 
   // Armor - Cloth
   { baseId: 'ARMOR_CLOTH_SET1', name: 'Scholar Robe', category: 'armor_cloth', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: 'ARMOR_CLOTH_SET2', name: 'Cleric Robe', category: 'armor_cloth', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: 'ARMOR_CLOTH_SET3', name: 'Mage Robe', category: 'armor_cloth', availableTiers: [4, 5, 6, 7, 8] },
+  { baseId: 'ARMOR_CLOTH_ROYAL', name: 'Royal Robe', category: 'armor_cloth', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: 'HEAD_CLOTH_SET2', name: 'Cleric Cowl', category: 'armor_cloth', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: 'SHOES_CLOTH_SET1', name: 'Scholar Sandals', category: 'armor_cloth', availableTiers: [4, 5, 6, 7, 8] },
 
@@ -68,6 +72,8 @@ const ITEM_BASES: ItemBase[] = [
   { baseId: 'ARMOR_LEATHER_SET2', name: 'Hunter Jacket', category: 'armor_leather', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: 'ARMOR_LEATHER_SET3', name: 'Assassin Jacket', category: 'armor_leather', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: 'ARMOR_LEATHER_MORGANA', name: 'Stalker Jacket', category: 'armor_leather', availableTiers: [4, 5, 6, 7, 8] },
+  { baseId: 'ARMOR_LEATHER_HELL', name: 'Hellion Jacket', category: 'armor_leather', availableTiers: [4, 5, 6, 7, 8] },
+  { baseId: 'ARMOR_LEATHER_FEY', name: 'Mistwalker Jacket', category: 'armor_leather', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: 'HEAD_LEATHER_SET2', name: 'Hunter Hood', category: 'armor_leather', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: 'HEAD_LEATHER_SET3', name: 'Assassin Hood', category: 'armor_leather', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: 'SHOES_LEATHER_SET3', name: 'Assassin Shoes', category: 'armor_leather', availableTiers: [4, 5, 6, 7, 8] },
@@ -76,6 +82,7 @@ const ITEM_BASES: ItemBase[] = [
   { baseId: 'ARMOR_PLATE_SET1', name: 'Soldier Armor', category: 'armor_plate', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: 'ARMOR_PLATE_SET2', name: 'Knight Armor', category: 'armor_plate', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: 'ARMOR_PLATE_SET3', name: 'Guardian Armor', category: 'armor_plate', availableTiers: [4, 5, 6, 7, 8] },
+  { baseId: 'ARMOR_PLATE_KEEPER', name: 'Judicator Armor', category: 'armor_plate', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: 'HEAD_PLATE_SET1', name: 'Soldier Helmet', category: 'armor_plate', availableTiers: [4, 5, 6, 7, 8] },
   { baseId: 'SHOES_PLATE_SET1', name: 'Soldier Boots', category: 'armor_plate', availableTiers: [4, 5, 6, 7, 8] },
 
