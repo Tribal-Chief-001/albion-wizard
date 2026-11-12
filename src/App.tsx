@@ -8,7 +8,7 @@ import { StatsBanner } from './components/StatsBanner';
 import { FilterBar } from './components/FilterBar';
 import { ArbitrageCard } from './components/ArbitrageCard';
 import { FactionMatrixModal } from './components/FactionMatrixModal';
-import { Sparkles, AlertCircle, RefreshCw } from 'lucide-react';
+import { Sparkles, AlertCircle, RefreshCw, Check } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [cluster, setCluster] = useState<Cluster>('west');
@@ -16,6 +16,7 @@ export const App: React.FC = () => {
   const [hasPremium, setHasPremium] = useState<boolean>(true);
   const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
   const [isFactionModalOpen, setIsFactionModalOpen] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -33,6 +34,14 @@ export const App: React.FC = () => {
     maxAgeHours: 24,
     starvationOnly: false,
   });
+
+  // Toast notification helper
+  const handleCardCopied = useCallback((itemName: string) => {
+    setToastMessage(itemName);
+    setTimeout(() => {
+      setToastMessage((prev) => (prev === itemName ? null : prev));
+    }, 2500);
+  }, []);
 
   // Sync premium filter with top navbar premium toggle
   useEffect(() => {
@@ -164,7 +173,11 @@ export const App: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {opportunities.map((opp, idx) => (
-                <ArbitrageCard key={`${opp.item.rawId}_${opp.quality}_${opp.sourceCity}_${idx}`} opp={opp} />
+                <ArbitrageCard
+                  key={`${opp.item.rawId}_${opp.quality}_${opp.sourceCity}_${idx}`}
+                  opp={opp}
+                  onCopied={handleCardCopied}
+                />
               ))}
             </div>
           )}
@@ -176,6 +189,16 @@ export const App: React.FC = () => {
         isOpen={isFactionModalOpen}
         onClose={() => setIsFactionModalOpen(false)}
       />
+
+      {/* Floating Clipboard Toast */}
+      {toastMessage && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-900/95 border border-amber-500/50 shadow-2xl shadow-amber-500/20 text-xs text-white backdrop-blur animate-in fade-in slide-in-from-bottom-3 duration-200">
+          <Check className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+          <span>
+            Copied <strong className="text-amber-400 font-semibold">{toastMessage}</strong> to clipboard for in-game search!
+          </span>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="border-t border-slate-800/80 bg-[#0e131f] px-4 py-6 mt-12 text-xs text-slate-500">

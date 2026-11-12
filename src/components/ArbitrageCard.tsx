@@ -5,20 +5,24 @@ import { formatSilver, QUALITY_COLORS, QUALITY_NAMES, TIER_COLORS } from '../uti
 
 interface ArbitrageCardProps {
   opp: ArbitrageOpportunity;
+  onCopied?: (name: string) => void;
 }
 
-export const ArbitrageCard: React.FC<ArbitrageCardProps> = ({ opp }) => {
+export const ArbitrageCard: React.FC<ArbitrageCardProps> = ({ opp, onCopied }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Copy the in-game search name (e.g. "Clarent Blade" or "T6 Clarent Blade")
     navigator.clipboard.writeText(opp.item.name);
     setCopied(true);
+    onCopied?.(opp.item.name);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const spriteUrl = `https://render.albiononline.com/v1/item/${opp.item.rawId}.png?quality=${opp.quality}`;
+
+  const isSourceStale = opp.sourcePriceAge.includes('d') || (opp.sourcePriceAge.includes('h') && parseInt(opp.sourcePriceAge) >= 12);
+  const isDestStale = opp.destPriceAge.includes('d') || (opp.destPriceAge.includes('h') && parseInt(opp.destPriceAge) >= 12);
 
   return (
     <div
@@ -97,7 +101,9 @@ export const ArbitrageCard: React.FC<ArbitrageCardProps> = ({ opp }) => {
           <div>
             <div className="text-[10px] text-slate-400 flex items-center gap-1">
               <span>Buy at {opp.sourceCity}</span>
-              <span className="text-slate-500 font-mono">({opp.sourcePriceAge})</span>
+              <span className={`font-mono text-[9px] px-1 py-0.2 rounded ${isSourceStale ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'text-slate-500'}`}>
+                {opp.sourcePriceAge} {isSourceStale && '⚠️'}
+              </span>
             </div>
             <div className="text-sm font-bold font-mono text-slate-200 mt-0.5">
               {formatSilver(opp.sourceBuyPrice)}
@@ -114,7 +120,9 @@ export const ArbitrageCard: React.FC<ArbitrageCardProps> = ({ opp }) => {
           <div className="text-right">
             <div className="text-[10px] text-slate-400 flex items-center justify-end gap-1">
               <span>Sell {opp.destCity}</span>
-              <span className="text-slate-500 font-mono">({opp.destPriceAge})</span>
+              <span className={`font-mono text-[9px] px-1 py-0.2 rounded ${isDestStale ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'text-slate-500'}`}>
+                {opp.destPriceAge} {isDestStale && '⚠️'}
+              </span>
             </div>
             <div className="text-sm font-bold font-mono text-emerald-400 mt-0.5">
               {formatSilver(opp.destSellPrice)}

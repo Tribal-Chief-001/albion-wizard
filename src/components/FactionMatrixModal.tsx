@@ -16,11 +16,11 @@ interface FactionHeart {
 }
 
 const FACTION_HEARTS: FactionHeart[] = [
-  { city: 'Lymhurst', heartName: 'Treeheart', itemId: 'QUESTITEM_TOKEN_FOREST', pointsCost: 3000, avgMarketValue: 46000 },
-  { city: 'Fort Sterling', heartName: 'Mountain Heart', itemId: 'QUESTITEM_TOKEN_HIGHLAND', pointsCost: 3000, avgMarketValue: 47500 },
-  { city: 'Martlock', heartName: 'Rockheart', itemId: 'QUESTITEM_TOKEN_STEPPE', pointsCost: 3000, avgMarketValue: 44000 },
-  { city: 'Thetford', heartName: 'Vineheart', itemId: 'QUESTITEM_TOKEN_SWAMP', pointsCost: 3000, avgMarketValue: 45000 },
-  { city: 'Bridgewatch', heartName: 'Beastheart', itemId: 'QUESTITEM_TOKEN_MOUNTAIN', pointsCost: 3000, avgMarketValue: 46500 },
+  { city: 'Lymhurst', heartName: 'Treeheart', itemId: 'T1_FACTION_FOREST_TOKEN_1', pointsCost: 3000, avgMarketValue: 46000 },
+  { city: 'Fort Sterling', heartName: 'Mountain Heart', itemId: 'T1_FACTION_MOUNTAIN_TOKEN_1', pointsCost: 3000, avgMarketValue: 47500 },
+  { city: 'Martlock', heartName: 'Rockheart', itemId: 'T1_FACTION_HIGHLAND_TOKEN_1', pointsCost: 3000, avgMarketValue: 44000 },
+  { city: 'Thetford', heartName: 'Vineheart', itemId: 'T1_FACTION_SWAMP_TOKEN_1', pointsCost: 3000, avgMarketValue: 45000 },
+  { city: 'Bridgewatch', heartName: 'Beastheart', itemId: 'T1_FACTION_STEPPE_TOKEN_1', pointsCost: 3000, avgMarketValue: 46500 },
 ];
 
 export const FactionMatrixModal: React.FC<FactionMatrixModalProps> = ({ isOpen, onClose }) => {
@@ -97,7 +97,7 @@ export const FactionMatrixModal: React.FC<FactionMatrixModalProps> = ({ isOpen, 
         {/* Conversion Cards */}
         <div className="space-y-2.5">
           <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-            Optimal Conversion Targets ({Math.floor(pointsInput / 3000)} Hearts Redeemable)
+            Optimal Conversion Targets ({Math.floor(pointsInput / 3000)} {Math.floor(pointsInput / 3000) === 1 ? 'Heart' : 'Hearts'} Redeemable)
           </h3>
 
           {FACTION_HEARTS.map((heart) => {
@@ -114,6 +114,9 @@ export const FactionMatrixModal: React.FC<FactionMatrixModalProps> = ({ isOpen, 
                   <img
                     src={`https://render.albiononline.com/v1/item/${heart.itemId}.png`}
                     alt={heart.heartName}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://render.albiononline.com/v1/item/T4_SOUL.png';
+                    }}
                     className="w-10 h-10 object-contain rounded bg-slate-900 border border-slate-800 p-0.5"
                   />
                   <div>
