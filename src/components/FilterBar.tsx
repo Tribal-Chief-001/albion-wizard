@@ -108,49 +108,51 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onChange }) => {
       </div>
 
       {/* Bottom Row: Tiers, Enchantments, Sliders */}
-      <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4 border-t border-slate-800/80 pt-3 text-xs w-full min-w-0">
-        {/* Tier Toggles */}
-        <div className="flex items-center gap-2">
-          <span className="text-slate-400 text-[11px] uppercase font-semibold">Tiers:</span>
-          <div className="flex items-center gap-1">
-            {[4, 5, 6, 7, 8].map((t) => (
-              <button
-                key={t}
-                onClick={() => toggleTier(t)}
-                className={`w-8 h-8 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center font-mono font-bold text-xs transition-all border min-w-[32px] min-h-[32px] ${
-                  filters.tiers.includes(t)
-                    ? 'bg-slate-800 border-amber-400 text-amber-300 shadow-sm'
-                    : 'bg-slate-900/50 border-slate-800 text-slate-500 hover:text-slate-400'
-                }`}
-              >
-                T{t}
-              </button>
-            ))}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 md:gap-4 border-t border-slate-800/80 pt-3 text-xs w-full min-w-0">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+          {/* Tier Toggles */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <span className="text-slate-400 text-[11px] uppercase font-semibold">Tiers:</span>
+            <div className="flex items-center gap-1">
+              {[4, 5, 6, 7, 8].map((t) => (
+                <button
+                  key={t}
+                  onClick={() => toggleTier(t)}
+                  className={`w-7 h-7 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center font-mono font-bold text-xs transition-all border min-w-[28px] min-h-[28px] ${
+                    filters.tiers.includes(t)
+                      ? 'bg-slate-800 border-amber-400 text-amber-300 shadow-sm'
+                      : 'bg-slate-900/50 border-slate-800 text-slate-500 hover:text-slate-400'
+                  }`}
+                >
+                  T{t}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Enchantment Toggles */}
-        <div className="flex items-center gap-2">
-          <span className="text-slate-400 text-[11px] uppercase font-semibold">Enchants:</span>
-          <div className="flex items-center gap-1">
-            {[0, 1, 2, 3].map((e) => (
-              <button
-                key={e}
-                onClick={() => toggleEnchantment(e)}
-                className={`px-2.5 py-1.5 sm:px-2 sm:py-1 rounded-lg font-mono font-bold text-xs transition-all border min-w-[32px] min-h-[32px] flex items-center justify-center ${
-                  filters.enchantments.includes(e)
-                    ? 'bg-slate-800 border-emerald-400 text-emerald-300'
-                    : 'bg-slate-900/50 border-slate-800 text-slate-500 hover:text-slate-400'
-                }`}
-              >
-                .{e}
-              </button>
-            ))}
+          {/* Enchantment Toggles */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <span className="text-slate-400 text-[11px] uppercase font-semibold">Enchants:</span>
+            <div className="flex items-center gap-1">
+              {[0, 1, 2, 3].map((e) => (
+                <button
+                  key={e}
+                  onClick={() => toggleEnchantment(e)}
+                  className={`px-2 py-1 rounded-lg font-mono font-bold text-xs transition-all border min-w-[28px] min-h-[28px] flex items-center justify-center ${
+                    filters.enchantments.includes(e)
+                      ? 'bg-slate-800 border-emerald-400 text-emerald-300'
+                      : 'bg-slate-900/50 border-slate-800 text-slate-500 hover:text-slate-400'
+                  }`}
+                >
+                  .{e}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Thresholds: Min Profit, Min ROI, Max Age */}
-        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full md:w-auto">
           {/* Min Profit */}
           <div className="flex items-center gap-1.5 text-slate-300">
             <span className="text-slate-400 text-[11px]">Min Profit:</span>

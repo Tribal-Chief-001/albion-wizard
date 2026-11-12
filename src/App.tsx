@@ -240,12 +240,12 @@ export const App: React.FC = () => {
 
             {/* Arbitrage Opportunities Grid */}
             <section className="space-y-3 sm:space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-1">
                 <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-amber-400" />
                   <span>Profitable Arbitrage Spreads ({opportunities.length})</span>
                 </h2>
-                <span className="text-xs text-slate-500 font-mono">
+                <span className="text-xs text-slate-500 font-mono truncate">
                   Click card to copy name &bull; Click "Add Run" to build transport haul
                 </span>
               </div>
@@ -271,7 +271,7 @@ export const App: React.FC = () => {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 w-full min-w-0 max-w-full">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 w-full min-w-0 max-w-full">
                   {opportunities.map((opp, idx) => (
                     <ArbitrageCard
                       key={`${opp.item.rawId}_${opp.quality}_${opp.sourceCity}_${idx}`}
