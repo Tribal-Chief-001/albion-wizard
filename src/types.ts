@@ -4,7 +4,7 @@ export type RoyalCity = 'Fort Sterling' | 'Thetford' | 'Lymhurst' | 'Bridgewatch
 
 export type DestinationCity = 'Caerleon' | 'Black Market';
 
-export type NavigationTab = 'black_market' | 'faction_matrix' | 'refining_lab' | 'macro_oracle';
+export type NavigationTab = 'black_market' | 'faction_matrix' | 'refining_lab' | 'reroll_sim' | 'macro_oracle';
 
 export type ItemCategory = 
   | 'all'

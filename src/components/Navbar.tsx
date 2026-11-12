@@ -1,6 +1,6 @@
 import React from 'react';
 import { Cluster, NavigationTab } from '../types';
-import { Coins, Bell, BellOff, Crown, Globe, ShieldAlert, Wand2, Truck, Zap, Flame, TrendingUp } from 'lucide-react';
+import { Coins, Bell, BellOff, Crown, Globe, ShieldAlert, Wand2, Truck, Zap, Flame, TrendingUp, Dices } from 'lucide-react';
 import { formatSilver } from '../utils/quality';
 
 interface NavbarProps {
@@ -167,6 +167,18 @@ export const Navbar: React.FC<NavbarProps> = ({
         >
           <Zap className="h-3.5 w-3.5" />
           <span>700/700 Focus & Refining Lab</span>
+        </button>
+
+        <button
+          onClick={() => onTabChange('reroll_sim')}
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border whitespace-nowrap ${
+            activeTab === 'reroll_sim'
+              ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-sm'
+              : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <Dices className="h-3.5 w-3.5" />
+          <span>+EV Quality Reroll (System 5)</span>
         </button>
 
         <button

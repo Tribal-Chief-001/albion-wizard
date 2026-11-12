@@ -11,6 +11,7 @@ import { FactionMatrixModal } from './components/FactionMatrixModal';
 import { TransportManifestDrawer } from './components/TransportManifestDrawer';
 import { RefiningLab } from './components/RefiningLab';
 import { GoldMacroOracle } from './components/GoldMacroOracle';
+import { RerollSimulator } from './components/RerollSimulator';
 import { Sparkles, AlertCircle, RefreshCw, Check } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -288,7 +289,10 @@ export const App: React.FC = () => {
         {/* TAB 3: 700/700 Focus & Refining Lab (System 3 & 4) */}
         {activeTab === 'refining_lab' && <RefiningLab />}
 
-        {/* TAB 4: Gold Macro & Patch Front-Running Oracle (System 6 & 7) */}
+        {/* TAB 4: +EV Quality Reroll Simulator (System 5) */}
+        {activeTab === 'reroll_sim' && <RerollSimulator hasPremium={hasPremium} />}
+
+        {/* TAB 5: Gold Macro & Patch Front-Running Oracle (System 6 & 7) */}
         {activeTab === 'macro_oracle' && <GoldMacroOracle cluster={cluster} goldPrice={goldPrice} />}
       </main>
 
