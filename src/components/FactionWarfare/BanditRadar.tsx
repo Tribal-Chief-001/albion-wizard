@@ -473,13 +473,13 @@ export const BanditRadar: React.FC<BanditRadarProps> = ({ cluster, audioEnabled 
 
           {/* Weibull Hazard Math Breakdown Table */}
           <div className="bg-[#121826] border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-3 min-w-0">
-            <div className="flex items-center justify-between">
-              <h4 className="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
-                <span>Empirical Weibull Hazard Curve Table</span>
-                <span className="text-[10px] font-mono text-slate-500">
-                  F(t) = 1 - exp(-((t - 150) / 105)^2.4)
-                </span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <h4 className="text-xs sm:text-sm font-bold text-white">
+                Empirical Weibull Hazard Curve Table
               </h4>
+              <span className="text-[10px] font-mono text-slate-500 truncate">
+                F(t) = 1 - exp(-((t - 150) / 105)^2.4)
+              </span>
             </div>
 
             <div className="overflow-x-auto no-scrollbar touch-scroll border border-slate-800/80 rounded-xl">
