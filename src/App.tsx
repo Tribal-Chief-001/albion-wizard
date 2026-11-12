@@ -222,7 +222,7 @@ export const App: React.FC = () => {
       />
 
       {/* Main Suite Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 overflow-x-hidden">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 overflow-x-hidden min-w-0 max-w-full">
         {/* TAB 1: Black Market Predator (System 2 & 5) */}
         {activeTab === 'black_market' && (
           <>
@@ -271,7 +271,7 @@ export const App: React.FC = () => {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 w-full min-w-0 max-w-full">
                   {opportunities.map((opp, idx) => (
                     <ArbitrageCard
                       key={`${opp.item.rawId}_${opp.quality}_${opp.sourceCity}_${idx}`}

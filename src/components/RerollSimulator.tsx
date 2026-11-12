@@ -613,10 +613,10 @@ export const RerollSimulator: React.FC<RerollSimulatorProps> = ({
         </div>
       </div>
 
-      {/* Main Grid: Control Panel (5 Cols) & Mathematical Dashboard (7 Cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* LEFT COLUMN: Interactive Parameter Inputs (5 Cols) */}
-        <div className="lg:col-span-5 space-y-5">
+      {/* Main Grid: Control Panel & Mathematical Dashboard */}
+      <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 sm:gap-6 w-full min-w-0 max-w-full">
+        {/* LEFT COLUMN: Interactive Parameter Inputs */}
+        <div className="w-full min-w-0 space-y-4 sm:space-y-5">
           <div className="bg-[#121826] border border-slate-800 rounded-2xl p-5 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="font-bold text-slate-200 text-sm flex items-center gap-2">
@@ -1084,8 +1084,8 @@ export const RerollSimulator: React.FC<RerollSimulatorProps> = ({
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Mathematical Outputs, EV Spread & Confidence Intervals (7 Cols) */}
-        <div className="lg:col-span-7 space-y-5">
+        {/* RIGHT COLUMN: Mathematical Outputs, EV Spread & Confidence Intervals */}
+        <div className="w-full min-w-0 space-y-4 sm:space-y-5">
           {/* 4 Core Financial KPI Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
             {/* Card 1: Expected Net Value (EV) */}

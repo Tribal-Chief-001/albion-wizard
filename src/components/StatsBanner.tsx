@@ -23,7 +23,7 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
   const totalPotentialProfit = opportunities.reduce((acc, curr) => acc + curr.netProfit, 0);
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-3 w-full min-w-0 max-w-full overflow-hidden">
       {/* Metric 1: Opportunities */}
       <div className="bg-[#121826] border border-slate-800/90 rounded-xl p-3 sm:p-3.5 flex flex-col justify-between min-w-0">
         <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
@@ -85,7 +85,7 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
       </div>
 
       {/* Refresh & Sync Card */}
-      <div className="col-span-2 md:col-span-4 lg:col-span-1 bg-[#121826] border border-slate-800/90 rounded-xl p-3 sm:p-3.5 flex flex-col justify-between min-w-0">
+      <div className="col-span-2 sm:col-span-2 lg:col-span-4 xl:col-span-1 bg-[#121826] border border-slate-800/90 rounded-xl p-3 sm:p-3.5 flex flex-col justify-between min-w-0">
         <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
           <span>Data Sync</span>
           <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />

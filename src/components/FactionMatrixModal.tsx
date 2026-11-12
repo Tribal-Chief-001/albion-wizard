@@ -29,8 +29,8 @@ export const FactionMatrixModal: React.FC<FactionMatrixModalProps> = ({ isOpen, 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-[#121826] border border-slate-700 rounded-2xl max-w-2xl w-full p-4 sm:p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto overscroll-y-contain touch-scroll">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-[#121826] border border-slate-700 rounded-2xl w-full max-w-xl p-4 sm:p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto overscroll-y-contain touch-scroll">
         {/* Close Button */}
         <button
           onClick={onClose}

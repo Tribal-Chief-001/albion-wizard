@@ -64,8 +64,15 @@ export const TransportManifestDrawer: React.FC<TransportManifestDrawerProps> = (
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-[#121826] border-l border-slate-800 w-full max-w-full sm:max-w-xl h-full flex flex-col shadow-2xl relative">
+    <div className="fixed inset-0 z-50 overflow-hidden">
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      />
+
+      {/* Drawer docked to right viewport */}
+      <div className="fixed inset-y-0 right-0 w-full sm:max-w-md bg-[#121826] border-l border-slate-800 h-full flex flex-col shadow-2xl z-50">
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60 flex-shrink-0">
           <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">

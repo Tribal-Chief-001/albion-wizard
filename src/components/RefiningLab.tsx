@@ -59,9 +59,9 @@ export const RefiningLab: React.FC = () => {
       </div>
 
       {/* Main Grid: Refining Optimizer on Left, Transmutation Matrix on Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
-        {/* Left: Interactive Focus Refining Studio (7 Cols) */}
-        <div className="lg:col-span-7 bg-[#121826] border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4 sm:space-y-5">
+      <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 sm:gap-6 w-full min-w-0 max-w-full">
+        {/* Left: Interactive Focus Refining Studio */}
+        <div className="w-full min-w-0 bg-[#121826] border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4 sm:space-y-5">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-2">
             <h3 className="font-bold text-slate-200 text-sm flex items-center gap-2">
               <Zap className="h-4 w-4 text-amber-400 flex-shrink-0" />
@@ -225,8 +225,8 @@ export const RefiningLab: React.FC = () => {
           </div>
         </div>
 
-        {/* Right: NPC Transmutation Matrix & Arbitrage (5 Cols) */}
-        <div className="lg:col-span-5 bg-[#121826] border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4">
+        {/* Right: NPC Transmutation Matrix & Arbitrage */}
+        <div className="w-full min-w-0 bg-[#121826] border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <h3 className="font-bold text-slate-200 text-sm flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-purple-400 flex-shrink-0" />

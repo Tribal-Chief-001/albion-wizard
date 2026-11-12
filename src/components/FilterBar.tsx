@@ -34,9 +34,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onChange }) => {
   };
 
   return (
-    <div className="bg-[#121826] border border-slate-800 rounded-xl p-3 sm:p-4 space-y-3 sm:space-y-4">
+    <div className="bg-[#121826] border border-slate-800 rounded-xl p-3 sm:p-4 space-y-3 sm:space-y-4 w-full max-w-full min-w-0 overflow-hidden">
       {/* Top Row: Search & Quick Toggles */}
-      <div className="flex flex-col md:flex-row gap-2.5 sm:gap-3 items-stretch md:items-center justify-between">
+      <div className="flex flex-col md:flex-row gap-2.5 sm:gap-3 items-stretch md:items-center justify-between w-full min-w-0">
         {/* Search Input */}
         <div className="relative flex-1 min-w-0">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -50,9 +50,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onChange }) => {
         </div>
 
         {/* Source City Selector & Starvation Toggle */}
-        <div className="flex items-center gap-2 w-full md:w-auto">
-          <div className="flex-1 sm:flex-initial flex items-center justify-between sm:justify-start gap-1.5 bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-2 text-xs text-slate-300 min-h-[40px]">
-            <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2 w-full md:w-auto min-w-0">
+          <div className="flex-1 sm:flex-initial flex items-center justify-between sm:justify-start gap-1.5 bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-2 text-xs text-slate-300 min-h-[40px] min-w-0">
+            <div className="flex items-center gap-1.5 min-w-0">
               <MapPin className="h-3.5 w-3.5 text-amber-400 flex-shrink-0" />
               <select
                 value={filters.sourceCity === 'all' ? 'All Cities' : filters.sourceCity}
@@ -62,7 +62,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onChange }) => {
                     sourceCity: e.target.value === 'All Cities' ? 'all' : e.target.value,
                   })
                 }
-                className="bg-transparent text-xs text-slate-200 focus:outline-none cursor-pointer pr-1"
+                className="bg-transparent text-xs text-slate-200 focus:outline-none cursor-pointer pr-1 truncate"
               >
                 {ROYAL_CITIES.map((c) => (
                   <option key={c} value={c} className="bg-slate-900 text-slate-200">
@@ -89,24 +89,26 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onChange }) => {
       </div>
 
       {/* Middle Row: Categories (Scrollable track on mobile, wrapped on tablet/desktop) */}
-      <div className="flex items-center sm:flex-wrap gap-1.5 border-t border-slate-800/80 pt-3 overflow-x-auto no-scrollbar touch-scroll pb-0.5">
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => onChange({ ...filters, category: cat.id })}
-            className={`px-3 py-1.5 sm:py-1 rounded-lg text-xs font-medium transition-all whitespace-nowrap min-h-[34px] sm:min-h-[28px] flex items-center justify-center flex-shrink-0 ${
-              filters.category === cat.id
-                ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
-                : 'bg-slate-900/80 text-slate-400 hover:text-slate-200 border border-slate-800'
-            }`}
-          >
-            {cat.label}
-          </button>
-        ))}
+      <div className="w-full max-w-full min-w-0 overflow-hidden border-t border-slate-800/80 pt-3">
+        <div className="flex items-center sm:flex-wrap gap-1.5 overflow-x-auto no-scrollbar touch-scroll pb-0.5 w-full min-w-0">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => onChange({ ...filters, category: cat.id })}
+              className={`px-3 py-1.5 sm:py-1 rounded-lg text-xs font-medium transition-all whitespace-nowrap min-h-[34px] sm:min-h-[28px] flex items-center justify-center flex-shrink-0 ${
+                filters.category === cat.id
+                  ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
+                  : 'bg-slate-900/80 text-slate-400 hover:text-slate-200 border border-slate-800'
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Bottom Row: Tiers, Enchantments, Sliders */}
-      <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4 border-t border-slate-800/80 pt-3 text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4 border-t border-slate-800/80 pt-3 text-xs w-full min-w-0">
         {/* Tier Toggles */}
         <div className="flex items-center gap-2">
           <span className="text-slate-400 text-[11px] uppercase font-semibold">Tiers:</span>

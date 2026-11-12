@@ -31,9 +31,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenManifest,
 }) => {
   return (
-    <header className="border-b border-slate-800 bg-[#0e131f]/95 backdrop-blur sticky top-0 z-40 px-3 sm:px-4 lg:px-8 py-2 sm:py-2.5 space-y-2">
+    <header className="border-b border-slate-800 bg-[#0e131f]/95 backdrop-blur sticky top-0 z-40 px-3 sm:px-4 lg:px-8 py-2 sm:py-2.5 w-full max-w-full overflow-hidden">
       {/* Top Utility Bar */}
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-3">
+      <div className="max-w-7xl mx-auto flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 sm:gap-3 w-full min-w-0">
         {/* Brand */}
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 p-0.5 shadow-lg shadow-amber-500/20 flex-shrink-0">
@@ -57,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Global Controls & Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2 text-xs flex-shrink-0">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 sm:gap-2 text-xs flex-shrink-0">
           {/* Transport Run Cart Button */}
           <button
             onClick={onOpenManifest}
@@ -135,67 +135,69 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Navigation Suite Tabs (Responsive Horizontal Scroll Container) */}
-      <div className="max-w-7xl mx-auto flex items-center gap-1.5 sm:gap-2 border-t border-slate-800/80 pt-2 overflow-x-auto no-scrollbar touch-scroll pb-1">
-        <button
-          onClick={() => onTabChange('black_market')}
-          className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border whitespace-nowrap min-h-[36px] flex-shrink-0 ${
-            activeTab === 'black_market'
-              ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-sm'
-              : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <Flame className="h-3.5 w-3.5 flex-shrink-0" />
-          <span>Black Market Predator</span>
-        </button>
+      {/* Navigation Suite Tabs (Isolated from canvas blowout) */}
+      <div className="w-full max-w-full min-w-0 border-t border-slate-800/80 mt-2 pt-2 overflow-hidden">
+        <div className="max-w-7xl mx-auto flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar touch-scroll pb-1 w-full min-w-0">
+          <button
+            onClick={() => onTabChange('black_market')}
+            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border whitespace-nowrap min-h-[36px] flex-shrink-0 ${
+              activeTab === 'black_market'
+                ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-sm'
+                : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Flame className="h-3.5 w-3.5 flex-shrink-0" />
+            <span>Black Market Predator</span>
+          </button>
 
-        <button
-          onClick={() => onTabChange('faction_matrix')}
-          className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border whitespace-nowrap min-h-[36px] flex-shrink-0 ${
-            activeTab === 'faction_matrix'
-              ? 'bg-blue-500 text-white border-blue-400 shadow-sm'
-              : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <ShieldAlert className="h-3.5 w-3.5 flex-shrink-0" />
-          <span>Faction Point Matrix</span>
-        </button>
+          <button
+            onClick={() => onTabChange('faction_matrix')}
+            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border whitespace-nowrap min-h-[36px] flex-shrink-0 ${
+              activeTab === 'faction_matrix'
+                ? 'bg-blue-500 text-white border-blue-400 shadow-sm'
+                : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <ShieldAlert className="h-3.5 w-3.5 flex-shrink-0" />
+            <span>Faction Point Matrix</span>
+          </button>
 
-        <button
-          onClick={() => onTabChange('refining_lab')}
-          className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border whitespace-nowrap min-h-[36px] flex-shrink-0 ${
-            activeTab === 'refining_lab'
-              ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-sm'
-              : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <Zap className="h-3.5 w-3.5 flex-shrink-0" />
-          <span>700/700 Focus & Refining</span>
-        </button>
+          <button
+            onClick={() => onTabChange('refining_lab')}
+            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border whitespace-nowrap min-h-[36px] flex-shrink-0 ${
+              activeTab === 'refining_lab'
+                ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-sm'
+                : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Zap className="h-3.5 w-3.5 flex-shrink-0" />
+            <span>700/700 Focus & Refining</span>
+          </button>
 
-        <button
-          onClick={() => onTabChange('reroll_sim')}
-          className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border whitespace-nowrap min-h-[36px] flex-shrink-0 ${
-            activeTab === 'reroll_sim'
-              ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-sm'
-              : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <Dices className="h-3.5 w-3.5 flex-shrink-0" />
-          <span>+EV Quality Reroll (Sys 5)</span>
-        </button>
+          <button
+            onClick={() => onTabChange('reroll_sim')}
+            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border whitespace-nowrap min-h-[36px] flex-shrink-0 ${
+              activeTab === 'reroll_sim'
+                ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-sm'
+                : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Dices className="h-3.5 w-3.5 flex-shrink-0" />
+            <span>+EV Quality Reroll (Sys 5)</span>
+          </button>
 
-        <button
-          onClick={() => onTabChange('macro_oracle')}
-          className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border whitespace-nowrap min-h-[36px] flex-shrink-0 ${
-            activeTab === 'macro_oracle'
-              ? 'bg-purple-500 text-white border-purple-400 shadow-sm'
-              : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <TrendingUp className="h-3.5 w-3.5 flex-shrink-0" />
-          <span>Gold Macro & Patch Oracle</span>
-        </button>
+          <button
+            onClick={() => onTabChange('macro_oracle')}
+            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border whitespace-nowrap min-h-[36px] flex-shrink-0 ${
+              activeTab === 'macro_oracle'
+                ? 'bg-purple-500 text-white border-purple-400 shadow-sm'
+                : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <TrendingUp className="h-3.5 w-3.5 flex-shrink-0" />
+            <span>Gold Macro & Patch Oracle</span>
+          </button>
+        </div>
       </div>
     </header>
   );
