@@ -1,6 +1,6 @@
 import React from 'react';
 import { Cluster } from '../types';
-import { Coins, Bell, BellOff, Crown, Globe, ShieldAlert } from 'lucide-react';
+import { Coins, Bell, BellOff, Crown, Globe, ShieldAlert, Wand2 } from 'lucide-react';
 import { formatSilver } from '../utils/quality';
 
 interface NavbarProps {
@@ -31,13 +31,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 p-0.5 shadow-lg shadow-amber-500/20">
             <div className="h-full w-full rounded-[10px] bg-slate-950 flex items-center justify-center">
-              <Coins className="h-5 w-5 text-amber-400" />
+              <Wand2 className="h-5 w-5 text-amber-400" />
             </div>
           </div>
           <div>
             <div className="flex items-center gap-2">
               <span className="font-bold tracking-tight text-white text-lg font-mono">
-                ALBION <span className="text-amber-400">SILVER</span> ENGINE
+                ALBION <span className="text-amber-400">WIZARD</span>
               </span>
               <span className="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                 v1.0 Live

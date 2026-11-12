@@ -1,4 +1,4 @@
-# Albion Silver Engine 🪙
+# Albion Wizard 🧙‍♂️
 > High-Leverage Black Market Arbitrage, Starvation Scanner & Economic Cockpit for Albion Online.
 
 [![Cloudflare Pages](https://img.shields.io/badge/Deployed%20with-Cloudflare%20Pages-f38020?logo=cloudflare&logoColor=white)](https://pages.cloudflare.com)
@@ -9,7 +9,7 @@
 
 ## ⚡ Overview
 
-Albion Silver Engine is a high-performance web platform designed to maximize silver velocity in *Albion Online*. It operates strictly out-of-process, utilizing crowdsourced order-book data from the **Albion Online Data Project (AODP)** and sprite rendering from the official **Albion Render API**.
+Albion Wizard is a high-performance web platform designed to maximize silver velocity in *Albion Online*. It operates strictly out-of-process, utilizing crowdsourced order-book data from the **Albion Online Data Project (AODP)** and sprite rendering from the official **Albion Render API**.
 
 ### Key Features
 * 🛰️ **Multi-Cluster Support:** Switch seamlessly between **Americas (West)**, **Europe**, and **Asia (East)**.
@@ -25,8 +25,8 @@ Albion Silver Engine is a high-performance web platform designed to maximize sil
 
 ```bash
 # Clone the repository
-git clone https://github.com/Tribal-Chief-001/albion-silver-engine.git
-cd albion-silver-engine
+git clone https://github.com/Tribal-Chief-001/albion-wizard.git
+cd albion-wizard
 
 # Install dependencies
 npm install
@@ -43,7 +43,7 @@ Open `http://localhost:3000` in your browser.
 
 ### 1. Cloudflare Pages (100% Free & Unlimited Bandwidth)
 1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com/) > **Workers & Pages** > **Create application** > **Pages** > **Connect to Git**.
-2. Select `Tribal-Chief-001/albion-silver-engine`.
+2. Select `Tribal-Chief-001/albion-wizard`.
 3. Set configuration:
    * **Framework preset:** `Vite`
    * **Build command:** `npm run build`
@@ -51,7 +51,7 @@ Open `http://localhost:3000` in your browser.
 4. Click **Save and Deploy**. Any subsequent `git push` will trigger an automated global deployment.
 
 ### 2. Vercel
-1. Import `Tribal-Chief-001/albion-silver-engine` directly on [Vercel](https://vercel.com/new).
+1. Import `Tribal-Chief-001/albion-wizard` directly on [Vercel](https://vercel.com/new).
 2. Framework preset will automatically detect `Vite`.
 3. Click **Deploy**.
 

@@ -181,7 +181,7 @@ export const App: React.FC = () => {
       <footer className="border-t border-slate-800/80 bg-[#0e131f] px-4 py-6 mt-12 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-mono font-bold text-slate-300">Albion Silver Engine</span>
+            <span className="font-mono font-bold text-slate-300">Albion Wizard</span>
             <span>&bull;</span>
             <span>100% Free & Open-Source</span>
             <span>&bull;</span>
