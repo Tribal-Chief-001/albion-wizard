@@ -130,7 +130,7 @@ export const App: React.FC = () => {
     setIsLoading(true);
     try {
       // 1. Fetch Gold price
-      fetchGoldPrice(cluster).then((price) => {
+      fetchGoldPrice(cluster, signal).then((price) => {
         if (!signal?.aborted && price > 0) setGoldPrice(price);
       });
 

@@ -13,38 +13,52 @@ const TARGET_DESTINATIONS = ['Caerleon', 'Black Market'];
 const cache = new Map<string, { data: AODPPriceRecord[]; timestamp: number }>();
 const CACHE_TTL_MS = 60 * 1000; // 1 minute local memory cache
 
-export async function fetchGoldPrice(cluster: Cluster): Promise<number> {
+export async function fetchGoldPrice(cluster: Cluster, signal?: AbortSignal): Promise<number> {
   const baseUrl = CLUSTER_URLS[cluster];
   try {
     const res = await fetch(`${baseUrl}/api/v2/stats/gold.json?count=1`, {
       headers: {
         'Accept': 'application/json',
-      }
+      },
+      signal,
     });
     if (!res.ok) return 0;
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) return 0;
     const data = await res.json();
     if (Array.isArray(data) && data.length > 0) {
       return data[0].price || 0;
     }
-  } catch (err) {
-    console.warn('Failed to fetch gold price:', err);
+  } catch (err: unknown) {
+    if ((err as Error)?.name !== 'AbortError') {
+      console.warn('Failed to fetch gold price:', err);
+    }
   }
   return 0;
 }
 
-export async function fetchGoldHistory(cluster: Cluster, count = 30): Promise<{ price: number; timestamp: string }[]> {
+export async function fetchGoldHistory(
+  cluster: Cluster,
+  count = 30,
+  signal?: AbortSignal
+): Promise<{ price: number; timestamp: string }[]> {
   const baseUrl = CLUSTER_URLS[cluster];
   try {
     const res = await fetch(`${baseUrl}/api/v2/stats/gold.json?count=${count}`, {
       headers: { 'Accept': 'application/json' },
+      signal,
     });
     if (!res.ok) return [];
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) return [];
     const data = await res.json();
     if (Array.isArray(data)) {
       return data.map((d) => ({ price: d.price || 0, timestamp: d.timestamp || '' }));
     }
-  } catch (err) {
-    console.warn('Failed to fetch gold history:', err);
+  } catch (err: unknown) {
+    if ((err as Error)?.name !== 'AbortError') {
+      console.warn('Failed to fetch gold history:', err);
+    }
   }
   return [];
 }
@@ -122,8 +136,14 @@ export async function fetchPricesBatch(
         console.warn(`AODP query returned status: ${response.status}`);
         if (response.status === 429) {
           // Back off briefly if rate limited
-          await new Promise((res) => setTimeout(res, 1000));
+          await new Promise((res) => setTimeout(res, 1500));
         }
+        continue;
+      }
+
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        console.warn(`AODP query returned non-JSON content-type: ${contentType}`);
         continue;
       }
 
@@ -131,6 +151,11 @@ export async function fetchPricesBatch(
       if (Array.isArray(data)) {
         allRecords.push(...data);
         cache.set(cacheKey, { data, timestamp: Date.now() });
+      }
+
+      // Respectful micro-pacing to avoid triggering edge IP throttles
+      if (i + chunkSize < itemRawIds.length) {
+        await new Promise((res) => setTimeout(res, 40));
       }
     } catch (err: unknown) {
       if ((err as Error)?.name === 'AbortError') {
