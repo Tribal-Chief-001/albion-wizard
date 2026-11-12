@@ -23,11 +23,21 @@ export const TIER_COLORS: Record<number, string> = {
 };
 
 export function formatSilver(amount: number): string {
-  if (amount >= 1_000_000) {
-    return `${(amount / 1_000_000).toFixed(2)}M`;
+  if (typeof amount !== 'number' || isNaN(amount) || !isFinite(amount)) {
+    return '0';
   }
-  if (amount >= 1_000) {
-    return `${(amount / 1_000).toFixed(1)}k`;
+  const isNegative = amount < 0;
+  const abs = Math.abs(amount);
+  const sign = isNegative ? '-' : '';
+
+  if (abs >= 1_000_000_000) {
+    return `${sign}${(abs / 1_000_000_000).toFixed(2)}B`;
   }
-  return amount.toLocaleString();
+  if (abs >= 1_000_000) {
+    return `${sign}${(abs / 1_000_000).toFixed(2)}M`;
+  }
+  if (abs >= 1_000) {
+    return `${sign}${(abs / 1_000).toFixed(1)}k`;
+  }
+  return `${sign}${Math.round(abs).toLocaleString()}`;
 }

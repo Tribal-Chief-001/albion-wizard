@@ -73,10 +73,13 @@ export const FactionMatrixModal: React.FC<FactionMatrixModalProps> = ({ isOpen, 
           <div className="flex items-center gap-3">
             <input
               type="number"
-              min={3000}
+              min={0}
               step={1000}
               value={pointsInput}
-              onChange={(e) => setPointsInput(Math.max(0, Number(e.target.value)))}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                setPointsInput(isNaN(val) ? 0 : Math.max(0, val));
+              }}
               className="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-base font-mono font-bold text-amber-400 focus:outline-none focus:border-blue-500"
             />
             <button

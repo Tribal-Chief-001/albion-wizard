@@ -15,7 +15,9 @@ export const ArbitrageCard: React.FC<ArbitrageCardProps> = ({ opp, onCopied, onA
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigator.clipboard.writeText(opp.item.name);
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(opp.item.name).catch(() => {});
+    }
     setCopied(true);
     onCopied?.(opp.item.name);
     setTimeout(() => setCopied(false), 2000);
@@ -30,8 +32,14 @@ export const ArbitrageCard: React.FC<ArbitrageCardProps> = ({ opp, onCopied, onA
 
   const spriteUrl = `https://render.albiononline.com/v1/item/${opp.item.rawId}.png?quality=${opp.quality}`;
 
-  const isSourceStale = opp.sourcePriceAge.includes('d') || (opp.sourcePriceAge.includes('h') && parseInt(opp.sourcePriceAge) >= 12);
-  const isDestStale = opp.destPriceAge.includes('d') || (opp.destPriceAge.includes('h') && parseInt(opp.destPriceAge) >= 12);
+  const isSourceStale =
+    opp.sourcePriceAge === 'Unknown' ||
+    opp.sourcePriceAge.includes('d') ||
+    (opp.sourcePriceAge.includes('h') && parseInt(opp.sourcePriceAge, 10) >= 12);
+  const isDestStale =
+    opp.destPriceAge === 'Unknown' ||
+    opp.destPriceAge.includes('d') ||
+    (opp.destPriceAge.includes('h') && parseInt(opp.destPriceAge, 10) >= 12);
 
   return (
     <div

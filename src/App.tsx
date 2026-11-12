@@ -126,17 +126,19 @@ export const App: React.FC = () => {
   }, [hasPremium]);
 
   // Main scan function
-  const scanMarket = useCallback(async () => {
+  const scanMarket = useCallback(async (signal?: AbortSignal) => {
     setIsLoading(true);
     try {
       // 1. Fetch Gold price
       fetchGoldPrice(cluster).then((price) => {
-        if (price > 0) setGoldPrice(price);
+        if (!signal?.aborted && price > 0) setGoldPrice(price);
       });
 
       // 2. Fetch prices for catalog
       const rawIds = ALBION_CATALOG.map((item) => item.rawId);
-      const records = await fetchPricesBatch(cluster, rawIds);
+      const records = await fetchPricesBatch(cluster, rawIds, undefined, signal);
+
+      if (signal?.aborted) return;
 
       setRawPrices(records);
       setLastUpdated(new Date());
@@ -148,16 +150,24 @@ export const App: React.FC = () => {
       if (hasStarvation && audioEnabled) {
         playAlertChime();
       }
-    } catch (err) {
-      console.error('Scan failed:', err);
+    } catch (err: unknown) {
+      if ((err as Error)?.name !== 'AbortError') {
+        console.error('Scan failed:', err);
+      }
     } finally {
-      setIsLoading(false);
+      if (!signal?.aborted) {
+        setIsLoading(false);
+      }
     }
   }, [cluster, filters, audioEnabled]);
 
-  // Initial scan on mount and whenever cluster changes
+  // Initial scan on mount and whenever cluster changes with cancellation guard
   useEffect(() => {
-    scanMarket();
+    const controller = new AbortController();
+    scanMarket(controller.signal);
+    return () => {
+      controller.abort();
+    };
   }, [cluster]);
 
   // Filter catalog based on active search, category, tiers, and enchantments
@@ -219,7 +229,7 @@ export const App: React.FC = () => {
             <StatsBanner
               opportunities={opportunities}
               isLoading={isLoading}
-              onRefresh={scanMarket}
+              onRefresh={() => scanMarket()}
               lastUpdated={lastUpdated}
               totalCatalogCount={ALBION_CATALOG.length}
             />

@@ -62,12 +62,15 @@ export const GoldMacroOracle: React.FC<GoldMacroOracleProps> = ({ cluster, goldP
 
   // Moving average baseline estimates based on server cluster
   const historicalBaseline = cluster === 'east' ? 14800 : cluster === 'europe' ? 9200 : 8900;
-  const priceSpread = goldPrice > 0 ? goldPrice - historicalBaseline : 0;
-  const spreadPercent = goldPrice > 0 ? ((priceSpread / historicalBaseline) * 100).toFixed(1) : '0';
-  const isUndervalued = priceSpread < 0;
+  const isDataAvailable = goldPrice > 0;
+  const priceSpread = isDataAvailable ? goldPrice - historicalBaseline : 0;
+  const spreadPercent = isDataAvailable ? ((priceSpread / historicalBaseline) * 100).toFixed(1) : '0';
+  const isUndervalued = isDataAvailable && priceSpread < 0;
 
   const handleCopyTarget = (targetText: string) => {
-    navigator.clipboard.writeText(targetText);
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(targetText).catch(() => {});
+    }
     setCopiedTarget(targetText);
     setTimeout(() => setCopiedTarget(null), 2000);
   };
@@ -111,22 +114,32 @@ export const GoldMacroOracle: React.FC<GoldMacroOracleProps> = ({ cluster, goldP
           {/* Signal Card */}
           <div
             className={`rounded-xl p-4 border flex items-start gap-3.5 ${
-              isUndervalued
+              !isDataAvailable
+                ? 'bg-slate-900 border-slate-700 text-slate-300'
+                : isUndervalued
                 ? 'bg-emerald-950/30 border-emerald-500/40 text-emerald-200'
                 : 'bg-amber-950/30 border-amber-500/40 text-amber-200'
             }`}
           >
-            {isUndervalued ? (
+            {!isDataAvailable ? (
+              <Coins className="h-6 w-6 text-slate-400 flex-shrink-0 mt-0.5 animate-pulse" />
+            ) : isUndervalued ? (
               <ArrowDownRight className="h-6 w-6 text-emerald-400 flex-shrink-0 mt-0.5" />
             ) : (
               <ArrowUpRight className="h-6 w-6 text-amber-400 flex-shrink-0 mt-0.5" />
             )}
             <div>
               <div className="font-bold text-sm">
-                {isUndervalued ? 'Macro Signal: ACCUMULATE GOLD' : 'Macro Signal: TAKE PROFIT / NEUTRAL'}
+                {!isDataAvailable
+                  ? 'Macro Signal: AWAITING LIVE DATA'
+                  : isUndervalued
+                  ? 'Macro Signal: ACCUMULATE GOLD'
+                  : 'Macro Signal: TAKE PROFIT / NEUTRAL'}
               </div>
               <p className="text-xs opacity-80 mt-1 leading-relaxed">
-                {isUndervalued
+                {!isDataAvailable
+                  ? `Live gold telemetry is synchronizing from ${cluster.toUpperCase()} cluster...`
+                  : isUndervalued
                   ? `Gold is trading at ${spreadPercent}% below the 30-day moving average (${formatSilver(historicalBaseline)}). Accumulate gold now to front-run monthly premium renewal spikes.`
                   : `Gold is currently trading at +${spreadPercent}% above historical baseline. Favorable for liquidating gold reserves back into Silver.`}
               </p>

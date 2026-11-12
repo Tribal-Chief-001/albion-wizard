@@ -54,9 +54,11 @@ export const TransportManifestDrawer: React.FC<TransportManifestDrawerProps> = (
     manifestText += `Recommended Mount: ${recommendedMount} (~${totalWeightKg}kg)\n\n`;
     manifestText += `SHOPPING LIST:\n`;
     items.forEach((item) => {
-      manifestText += `- [${item.quantity}x] ${item.opp.item.name} (Q${item.opp.quality}) @ ${item.opp.sourceCity} for ${formatSilver(item.opp.sourceBuyPrice)} ea -> Sell Black Market for ${formatSilver(item.opp.destSellPrice)} ea\n`;
+      manifestText += `- [${item.quantity}x] ${item.opp.item.name} (Q${item.opp.quality}) @ ${item.opp.sourceCity} for ${formatSilver(item.opp.sourceBuyPrice)} ea -> Sell ${item.opp.destCity} for ${formatSilver(item.opp.destSellPrice)} ea\n`;
     });
-    navigator.clipboard.writeText(manifestText);
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(manifestText).catch(() => {});
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -121,7 +123,7 @@ export const TransportManifestDrawer: React.FC<TransportManifestDrawerProps> = (
                     <div className="flex items-center gap-1.5 text-[11px] text-slate-400 mt-0.5">
                       <span>Buy: <strong className="text-slate-200">{item.opp.sourceCity}</strong></span>
                       <ArrowRight className="h-3 w-3 text-amber-500" />
-                      <span>Sell: <strong className="text-emerald-400">Black Market</strong></span>
+                      <span>Sell: <strong className="text-emerald-400">{item.opp.destCity}</strong></span>
                     </div>
                     <div className="text-[11px] text-amber-400 font-mono mt-0.5">
                       Net: +{formatSilver(item.opp.netProfit * item.quantity)} ({item.opp.roiPercentage}% ROI)

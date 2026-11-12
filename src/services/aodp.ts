@@ -50,15 +50,25 @@ export async function fetchGoldHistory(cluster: Cluster, count = 30): Promise<{ 
 }
 
 export function formatPriceAge(isoDateString: string): { label: string; ageHours: number } {
-  if (!isoDateString || isoDateString.startsWith('0001-01-01')) {
+  if (!isoDateString || typeof isoDateString !== 'string' || isoDateString.startsWith('0001-01-01')) {
     return { label: 'Unknown', ageHours: 9999 };
   }
   
-  const priceDate = new Date(isoDateString + 'Z').getTime();
+  // Normalize date string: append 'Z' only if no timezone indicator is present
+  const hasTimezone =
+    isoDateString.endsWith('Z') ||
+    (isoDateString.includes('T') &&
+      (isoDateString.slice(10).includes('+') || isoDateString.slice(10).includes('-')));
+  const normalized = hasTimezone ? isoDateString : `${isoDateString}Z`;
+  const priceDate = new Date(normalized).getTime();
+
+  if (isNaN(priceDate)) {
+    return { label: 'Unknown', ageHours: 9999 };
+  }
+
   const now = Date.now();
-  const diffMs = now - priceDate;
-  
-  const diffMin = Math.max(0, Math.floor(diffMs / (60 * 1000)));
+  const diffMs = Math.max(0, now - priceDate);
+  const diffMin = Math.floor(diffMs / (60 * 1000));
   const diffHours = diffMin / 60;
 
   if (diffMin < 60) {
@@ -76,7 +86,8 @@ export function formatPriceAge(isoDateString: string): { label: string; ageHours
 export async function fetchPricesBatch(
   cluster: Cluster,
   itemRawIds: string[],
-  locations: string[] = [...ROYAL_CITIES, ...TARGET_DESTINATIONS]
+  locations: string[] = [...ROYAL_CITIES, ...TARGET_DESTINATIONS],
+  signal?: AbortSignal
 ): Promise<AODPPriceRecord[]> {
   const baseUrl = CLUSTER_URLS[cluster];
   const chunkSize = 25; // Keep URLs compact and fast
@@ -85,6 +96,8 @@ export async function fetchPricesBatch(
   const locationsParam = locations.join(',');
 
   for (let i = 0; i < itemRawIds.length; i += chunkSize) {
+    if (signal?.aborted) break;
+
     const chunk = itemRawIds.slice(i, i + chunkSize);
     const itemsParam = chunk.join(',');
     const cacheKey = `${cluster}_${itemsParam}_${locationsParam}`;
@@ -102,10 +115,15 @@ export async function fetchPricesBatch(
         headers: {
           'Accept': 'application/json',
         },
+        signal,
       });
 
       if (!response.ok) {
         console.warn(`AODP query returned status: ${response.status}`);
+        if (response.status === 429) {
+          // Back off briefly if rate limited
+          await new Promise((res) => setTimeout(res, 1000));
+        }
         continue;
       }
 
@@ -114,7 +132,10 @@ export async function fetchPricesBatch(
         allRecords.push(...data);
         cache.set(cacheKey, { data, timestamp: Date.now() });
       }
-    } catch (err) {
+    } catch (err: unknown) {
+      if ((err as Error)?.name === 'AbortError') {
+        break;
+      }
       console.error(`Error fetching chunk ${i / chunkSize}:`, err);
     }
   }
@@ -151,15 +172,26 @@ export function computeArbitrage(
       const cityMap = priceIndex.get(key);
       if (!cityMap) continue;
 
-      // Check destination: Prioritize Black Market, then Caerleon
-      const bmRecord = cityMap.get('Black Market') || cityMap.get('Caerleon');
-      if (!bmRecord) continue;
+      // Prioritize destination with highest buy order > 0 (Black Market or Caerleon)
+      const bm = cityMap.get('Black Market');
+      const cl = cityMap.get('Caerleon');
+      let destRecord: AODPPriceRecord | undefined;
 
-      // Black Market buy price (Max buy order)
-      const destSellPrice = bmRecord.buy_price_max;
+      if (bm && bm.buy_price_max > 0 && cl && cl.buy_price_max > 0) {
+        destRecord = bm.buy_price_max >= cl.buy_price_max ? bm : cl;
+      } else if (bm && bm.buy_price_max > 0) {
+        destRecord = bm;
+      } else if (cl && cl.buy_price_max > 0) {
+        destRecord = cl;
+      }
+
+      if (!destRecord) continue;
+
+      // Destination buy price (Max buy order)
+      const destSellPrice = destRecord.buy_price_max;
       if (destSellPrice <= 0) continue;
 
-      const destAge = formatPriceAge(bmRecord.buy_price_max_date);
+      const destAge = formatPriceAge(destRecord.buy_price_max_date);
       if (destAge.ageHours > filters.maxAgeHours) continue;
 
       // Find lowest sell order across Royal cities
@@ -183,12 +215,12 @@ export function computeArbitrage(
 
         const taxesAndFees = Math.round(destSellPrice * taxRate);
         const netProfit = grossProfit - taxesAndFees;
-        if (netProfit < filters.minProfit) continue;
+        if (netProfit <= 0 || netProfit < filters.minProfit) continue;
 
         const roiPercentage = Math.round((netProfit / sourceBuyPrice) * 100);
         if (roiPercentage < filters.minRoi) continue;
 
-        const isStarvation = roiPercentage >= 150 && destSellPrice >= 60000;
+        const isStarvation = roiPercentage >= 150 && destSellPrice >= 50000;
         if (filters.starvationOnly && !isStarvation) continue;
 
         opportunities.push({
@@ -197,7 +229,7 @@ export function computeArbitrage(
           sourceCity: royalCity,
           sourceBuyPrice,
           sourcePriceAge: sourceAge.label,
-          destCity: (bmRecord.city === 'Black Market' ? 'Black Market' : 'Caerleon'),
+          destCity: (destRecord.city === 'Black Market' ? 'Black Market' : 'Caerleon'),
           destSellPrice,
           destPriceAge: destAge.label,
           grossProfit,

@@ -19,7 +19,7 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
   totalCatalogCount,
 }) => {
   const starvationCount = opportunities.filter((o) => o.isStarvation).length;
-  const maxRoi = opportunities.length > 0 ? Math.max(...opportunities.map((o) => o.roiPercentage)) : 0;
+  const maxRoi = opportunities.reduce((max, o) => Math.max(max, o.roiPercentage), 0);
   const totalPotentialProfit = opportunities.reduce((acc, curr) => acc + curr.netProfit, 0);
 
   return (
