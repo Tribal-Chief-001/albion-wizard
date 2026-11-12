@@ -196,7 +196,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             }`}
           >
             <ShieldAlert className="h-3.5 w-3.5 flex-shrink-0" />
-            <span>Faction Point Matrix</span>
+            <span>Faction Command Center</span>
           </button>
 
           <button

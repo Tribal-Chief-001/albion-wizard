@@ -8,6 +8,7 @@ import { StatsBanner } from './components/StatsBanner';
 import { FilterBar } from './components/FilterBar';
 import { ArbitrageCard } from './components/ArbitrageCard';
 import { FactionMatrixModal } from './components/FactionMatrixModal';
+import { FactionCommandCenter } from './components/FactionWarfare/FactionCommandCenter';
 import { TransportManifestDrawer } from './components/TransportManifestDrawer';
 import { RefiningLab } from './components/RefiningLab';
 import { GoldMacroOracle } from './components/GoldMacroOracle';
@@ -210,13 +211,7 @@ export const App: React.FC = () => {
         audioEnabled={audioEnabled}
         onAudioToggle={() => setAudioEnabled(!audioEnabled)}
         activeTab={activeTab}
-        onTabChange={(tab) => {
-          if (tab === 'faction_matrix') {
-            setIsFactionModalOpen(true);
-          } else {
-            setActiveTab(tab);
-          }
-        }}
+        onTabChange={(tab) => setActiveTab(tab)}
         manifestCount={manifestItems.reduce((acc, i) => acc + i.quantity, 0)}
         onOpenManifest={() => setIsManifestOpen(true)}
       />
@@ -284,6 +279,15 @@ export const App: React.FC = () => {
               )}
             </section>
           </>
+        )}
+
+        {/* TAB 2: Faction Warfare Command Center (System 1 & 8) */}
+        {activeTab === 'faction_matrix' && (
+          <FactionCommandCenter
+            cluster={cluster}
+            hasPremium={hasPremium}
+            audioEnabled={audioEnabled}
+          />
         )}
 
         {/* TAB 3: 700/700 Focus & Refining Lab (System 3 & 4) */}
