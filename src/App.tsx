@@ -199,7 +199,7 @@ export const App: React.FC = () => {
   }, [filteredCatalog, rawPrices, filters]);
 
   return (
-    <div className="min-h-screen bg-[#0b0e14] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#0b0e14] text-slate-100 flex flex-col font-sans overflow-x-hidden w-full">
       {/* Top Navigation */}
       <Navbar
         cluster={cluster}
@@ -222,7 +222,7 @@ export const App: React.FC = () => {
       />
 
       {/* Main Suite Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 overflow-x-hidden">
         {/* TAB 1: Black Market Predator (System 2 & 5) */}
         {activeTab === 'black_market' && (
           <>
@@ -239,8 +239,8 @@ export const App: React.FC = () => {
             <FilterBar filters={filters} onChange={setFilters} />
 
             {/* Arbitrage Opportunities Grid */}
-            <section className="space-y-4">
-              <div className="flex items-center justify-between">
+            <section className="space-y-3 sm:space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                 <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-amber-400" />
                   <span>Profitable Arbitrage Spreads ({opportunities.length})</span>
@@ -251,7 +251,7 @@ export const App: React.FC = () => {
               </div>
 
               {isLoading && opportunities.length === 0 ? (
-                <div className="bg-[#121826] border border-slate-800 rounded-2xl p-12 text-center space-y-3">
+                <div className="bg-[#121826] border border-slate-800 rounded-2xl p-8 sm:p-12 text-center space-y-3">
                   <RefreshCw className="h-8 w-8 text-amber-400 animate-spin mx-auto" />
                   <p className="text-slate-300 font-medium text-sm">
                     Scanning regional order books on {cluster.toUpperCase()} cluster...
@@ -261,7 +261,7 @@ export const App: React.FC = () => {
                   </p>
                 </div>
               ) : opportunities.length === 0 ? (
-                <div className="bg-[#121826] border border-slate-800 rounded-2xl p-12 text-center space-y-3">
+                <div className="bg-[#121826] border border-slate-800 rounded-2xl p-8 sm:p-12 text-center space-y-3">
                   <AlertCircle className="h-8 w-8 text-slate-500 mx-auto" />
                   <h3 className="text-slate-300 font-semibold text-base">
                     No matching opportunities found with current filters
@@ -271,7 +271,7 @@ export const App: React.FC = () => {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
                   {opportunities.map((opp, idx) => (
                     <ArbitrageCard
                       key={`${opp.item.rawId}_${opp.quality}_${opp.sourceCity}_${idx}`}
@@ -314,16 +314,16 @@ export const App: React.FC = () => {
 
       {/* Floating Clipboard / Action Toast */}
       {toastMessage && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-900/95 border border-amber-500/50 shadow-2xl shadow-amber-500/20 text-xs text-white backdrop-blur animate-in fade-in slide-in-from-bottom-3 duration-200">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-900/95 border border-amber-500/50 shadow-2xl shadow-amber-500/20 text-xs text-white backdrop-blur animate-in fade-in slide-in-from-bottom-3 duration-200 max-w-[90vw] truncate">
           <Check className="h-4 w-4 text-emerald-400 flex-shrink-0" />
-          <span>{toastMessage}</span>
+          <span className="truncate">{toastMessage}</span>
         </div>
       )}
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-[#0e131f] px-4 py-6 mt-12 text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
+      <footer className="border-t border-slate-800/80 bg-[#0e131f] px-3 sm:px-4 py-5 sm:py-6 mt-8 sm:mt-12 text-xs text-slate-500">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 text-center md:text-left">
+          <div className="flex items-center gap-2 flex-wrap justify-center md:justify-start">
             <span className="font-mono font-bold text-slate-300">Albion Wizard</span>
             <span>&bull;</span>
             <span>Systems 1 through 7 Online</span>

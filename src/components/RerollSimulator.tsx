@@ -550,13 +550,13 @@ export const RerollSimulator: React.FC<RerollSimulatorProps> = ({
 
         {/* Global Summary Badge */}
         <div
-          className={`border rounded-xl px-5 py-3 text-right font-mono flex-shrink-0 transition-all ${
+          className={`border rounded-xl p-4 sm:px-5 sm:py-3 text-left lg:text-right font-mono w-full lg:w-auto flex-shrink-0 transition-all ${
             isPositiveEV
               ? 'bg-emerald-950/40 border-emerald-500/40 shadow-lg shadow-emerald-950/20'
               : 'bg-rose-950/40 border-rose-500/40 shadow-lg shadow-rose-950/20'
           }`}
         >
-          <div className="flex items-center justify-end gap-1.5 mb-0.5">
+          <div className="flex items-center justify-start lg:justify-end gap-1.5 mb-0.5">
             {isPositiveEV ? (
               <TrendingUp className="h-4 w-4 text-emerald-400" />
             ) : (
@@ -586,7 +586,7 @@ export const RerollSimulator: React.FC<RerollSimulatorProps> = ({
       </div>
 
       {/* Quick Load Presets Bar */}
-      <div className="bg-[#121826]/80 border border-slate-800/80 rounded-xl p-3 flex items-center gap-2.5 overflow-x-auto no-scrollbar">
+      <div className="bg-[#121826]/80 border border-slate-800/80 rounded-xl p-3 flex items-center gap-2.5 overflow-x-auto no-scrollbar touch-scroll">
         <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 flex-shrink-0 pl-1">
           <Sparkles className="h-3.5 w-3.5 text-amber-400" />
           <span>Quick Presets:</span>
@@ -678,12 +678,12 @@ export const RerollSimulator: React.FC<RerollSimulatorProps> = ({
                 <span>Starting Item Quality</span>
                 <span className="text-[11px] text-slate-500">Normal (1) to Excellent (4)</span>
               </label>
-              <div className="grid grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                 {[1, 2, 3, 4].map((q) => (
                   <button
                     key={q}
                     onClick={() => setStartingQuality(q)}
-                    className={`py-2 px-1 rounded-lg border text-xs font-medium transition-all text-center truncate ${
+                    className={`py-2 px-1.5 rounded-lg border text-xs font-medium transition-all text-center truncate min-h-[36px] ${
                       startingQuality === q
                         ? QUALITY_COLORS[q]
                         : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200'
@@ -1087,22 +1087,22 @@ export const RerollSimulator: React.FC<RerollSimulatorProps> = ({
         {/* RIGHT COLUMN: Mathematical Outputs, EV Spread & Confidence Intervals (7 Cols) */}
         <div className="lg:col-span-7 space-y-5">
           {/* 4 Core Financial KPI Metric Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
             {/* Card 1: Expected Net Value (EV) */}
             <div
-              className={`p-4 rounded-2xl border transition-all ${
+              className={`p-3.5 sm:p-4 rounded-2xl border min-w-0 transition-all ${
                 isPositiveEV
                   ? 'bg-[#121826] border-emerald-500/40 shadow-lg shadow-emerald-950/10'
                   : 'bg-[#121826] border-rose-500/40 shadow-lg shadow-rose-950/10'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[11px] uppercase font-bold text-slate-400 flex items-center gap-1.5">
-                  <TrendingUp className={`h-3.5 w-3.5 ${isPositiveEV ? 'text-emerald-400' : 'text-rose-400'}`} />
-                  <span>Expected Net Value (EV)</span>
+                <span className="text-[11px] uppercase font-bold text-slate-400 flex items-center gap-1.5 truncate">
+                  <TrendingUp className={`h-3.5 w-3.5 flex-shrink-0 ${isPositiveEV ? 'text-emerald-400' : 'text-rose-400'}`} />
+                  <span className="truncate">Expected Net Value (EV)</span>
                 </span>
                 <span
-                  className={`text-[10px] uppercase font-bold px-1.5 py-0.2 rounded font-mono ${
+                  className={`text-[10px] uppercase font-bold px-1.5 py-0.2 rounded font-mono flex-shrink-0 ${
                     isPositiveEV
                       ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                       : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
@@ -1112,14 +1112,14 @@ export const RerollSimulator: React.FC<RerollSimulatorProps> = ({
                 </span>
               </div>
               <div
-                className={`text-2xl font-extrabold font-mono tracking-tight ${
+                className={`text-xl sm:text-2xl font-extrabold font-mono tracking-tight truncate ${
                   isPositiveEV ? 'text-emerald-400' : 'text-rose-400'
                 }`}
               >
                 {isPositiveEV ? '+' : ''}
                 {formatSilver(expectedNetValue)}
               </div>
-              <div className="text-[11px] text-slate-400 font-mono mt-1 flex items-center justify-between">
+              <div className="text-[11px] text-slate-400 font-mono mt-1 flex items-center justify-between truncate">
                 <span>Expected ROI:</span>
                 <span className={isPositiveEV ? 'text-emerald-300 font-bold' : 'text-rose-300 font-bold'}>
                   {expectedRoi >= 0 ? '+' : ''}
@@ -1129,20 +1129,20 @@ export const RerollSimulator: React.FC<RerollSimulatorProps> = ({
             </div>
 
             {/* Card 2: Expected Total Silver Cost */}
-            <div className="bg-[#121826] border border-slate-800 p-4 rounded-2xl">
+            <div className="bg-[#121826] border border-slate-800 p-3.5 sm:p-4 rounded-2xl min-w-0">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[11px] uppercase font-bold text-slate-400 flex items-center gap-1.5">
-                  <Coins className="h-3.5 w-3.5 text-amber-400" />
-                  <span>Expected Total Cost</span>
+                <span className="text-[11px] uppercase font-bold text-slate-400 flex items-center gap-1.5 truncate">
+                  <Coins className="h-3.5 w-3.5 text-amber-400 flex-shrink-0" />
+                  <span className="truncate">Expected Total Cost</span>
                 </span>
-                <span className="text-[10px] text-slate-400 font-mono">
+                <span className="text-[10px] text-slate-400 font-mono flex-shrink-0">
                   ~{Math.round(expectedRolls)} rolls
                 </span>
               </div>
-              <div className="text-2xl font-extrabold font-mono text-white tracking-tight">
+              <div className="text-xl sm:text-2xl font-extrabold font-mono text-white tracking-tight truncate">
                 {formatSilver(expectedTotalCost)}
               </div>
-              <div className="text-[11px] text-slate-400 font-mono mt-1 flex items-center justify-between">
+              <div className="text-[11px] text-slate-400 font-mono mt-1 flex items-center justify-between truncate">
                 <span>Reroll Fees Share:</span>
                 <span className="text-amber-400 font-bold">
                   {formatSilver(expectedRerollCost)} ({Math.round((expectedRerollCost / expectedTotalCost) * 100)}%)
@@ -1151,20 +1151,20 @@ export const RerollSimulator: React.FC<RerollSimulatorProps> = ({
             </div>
 
             {/* Card 3: 50th Percentile (Median) Cost */}
-            <div className="bg-[#121826] border border-slate-800 p-4 rounded-2xl">
+            <div className="bg-[#121826] border border-slate-800 p-3.5 sm:p-4 rounded-2xl min-w-0">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[11px] uppercase font-bold text-slate-400 flex items-center gap-1.5">
-                  <Target className="h-3.5 w-3.5 text-blue-400" />
-                  <span>Median Cost (P50)</span>
+                <span className="text-[11px] uppercase font-bold text-slate-400 flex items-center gap-1.5 truncate">
+                  <Target className="h-3.5 w-3.5 text-blue-400 flex-shrink-0" />
+                  <span className="truncate">Median Cost (P50)</span>
                 </span>
-                <span className="text-[10px] text-blue-400 font-mono">
+                <span className="text-[10px] text-blue-400 font-mono flex-shrink-0">
                   {quantiles.p50.rolls} rolls
                 </span>
               </div>
-              <div className="text-2xl font-extrabold font-mono text-blue-300 tracking-tight">
+              <div className="text-xl sm:text-2xl font-extrabold font-mono text-blue-300 tracking-tight truncate">
                 {formatSilver(quantiles.p50.totalCost)}
               </div>
-              <div className="text-[11px] text-slate-400 font-mono mt-1 flex items-center justify-between">
+              <div className="text-[11px] text-slate-400 font-mono mt-1 flex items-center justify-between truncate">
                 <span>Profit at P50:</span>
                 <span className={quantiles.p50.isProfit ? 'text-emerald-300 font-bold' : 'text-rose-300 font-bold'}>
                   {quantiles.p50.isProfit ? '+' : ''}
@@ -1174,20 +1174,20 @@ export const RerollSimulator: React.FC<RerollSimulatorProps> = ({
             </div>
 
             {/* Card 4: 90th Percentile (Conservative) Cost */}
-            <div className="bg-[#121826] border border-slate-800 p-4 rounded-2xl">
+            <div className="bg-[#121826] border border-slate-800 p-3.5 sm:p-4 rounded-2xl min-w-0">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[11px] uppercase font-bold text-slate-400 flex items-center gap-1.5">
-                  <AlertCircle className="h-3.5 w-3.5 text-orange-400" />
-                  <span>90th Percentile Cost (P90)</span>
+                <span className="text-[11px] uppercase font-bold text-slate-400 flex items-center gap-1.5 truncate">
+                  <AlertCircle className="h-3.5 w-3.5 text-orange-400 flex-shrink-0" />
+                  <span className="truncate">90th Percentile Cost (P90)</span>
                 </span>
-                <span className="text-[10px] text-orange-400 font-mono">
+                <span className="text-[10px] text-orange-400 font-mono flex-shrink-0">
                   {quantiles.p90.rolls} rolls
                 </span>
               </div>
-              <div className="text-2xl font-extrabold font-mono text-orange-300 tracking-tight">
+              <div className="text-xl sm:text-2xl font-extrabold font-mono text-orange-300 tracking-tight truncate">
                 {formatSilver(quantiles.p90.totalCost)}
               </div>
-              <div className="text-[11px] text-slate-400 font-mono mt-1 flex items-center justify-between">
+              <div className="text-[11px] text-slate-400 font-mono mt-1 flex items-center justify-between truncate">
                 <span>Profit at P90:</span>
                 <span className={quantiles.p90.isProfit ? 'text-emerald-300 font-bold' : 'text-rose-300 font-bold'}>
                   {quantiles.p90.isProfit ? '+' : ''}
@@ -1243,8 +1243,8 @@ export const RerollSimulator: React.FC<RerollSimulatorProps> = ({
               </div>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs font-mono text-left">
+            <div className="overflow-x-auto touch-scroll -mx-4 sm:mx-0 px-4 sm:px-0">
+              <table className="w-full min-w-[500px] text-xs font-mono text-left">
                 <thead>
                   <tr className="border-b border-slate-800 text-slate-400 text-[11px]">
                     <th className="pb-2 font-semibold">Confidence Tier</th>
@@ -1282,11 +1282,11 @@ export const RerollSimulator: React.FC<RerollSimulatorProps> = ({
           </div>
 
           {/* Monte Carlo Empirical Simulation Dashboard */}
-          <div className="bg-[#121826] border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div className="bg-[#121826] border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
               <div>
                 <h3 className="font-bold text-slate-200 text-sm flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-amber-400" />
+                  <Sparkles className="h-4 w-4 text-amber-400 flex-shrink-0" />
                   <span>Monte Carlo Empirical Trial Results ({simulationStats.totalRuns.toLocaleString()} runs)</span>
                 </h3>
                 <p className="text-[11px] text-slate-400 mt-0.5">
@@ -1295,7 +1295,7 @@ export const RerollSimulator: React.FC<RerollSimulatorProps> = ({
               </div>
               <button
                 onClick={() => setSimulationSeed((s) => s + 1)}
-                className="px-3 py-1.5 rounded-lg border border-purple-500/40 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 text-xs font-mono font-bold flex items-center gap-1.5 transition-all self-end sm:self-auto"
+                className="px-3 py-1.5 rounded-lg border border-purple-500/40 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 text-xs font-mono font-bold flex items-center gap-1.5 transition-all self-end sm:self-auto min-h-[36px]"
               >
                 <RotateCcw className="h-3 w-3" />
                 <span>Re-Sample Monte Carlo</span>
@@ -1303,50 +1303,50 @@ export const RerollSimulator: React.FC<RerollSimulatorProps> = ({
             </div>
 
             {/* Empirical Summary Strip */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono text-xs">
-              <div className="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800/80">
-                <span className="text-[10px] text-slate-500 uppercase block">Empirical Win Rate</span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 font-mono text-xs">
+              <div className="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800/80 min-w-0">
+                <span className="text-[10px] text-slate-500 uppercase block truncate">Empirical Win Rate</span>
                 <span
-                  className={`text-base font-extrabold ${
+                  className={`text-sm sm:text-base font-extrabold truncate block ${
                     simulationStats.winRate >= 50 ? 'text-emerald-400' : 'text-rose-400'
                   }`}
                 >
                   {simulationStats.winRate.toFixed(1)}%
                 </span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">Profitable Runs</span>
+                <span className="text-[10px] text-slate-400 block mt-0.5 truncate">Profitable Runs</span>
               </div>
 
-              <div className="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800/80">
-                <span className="text-[10px] text-slate-500 uppercase block">Avg Rolls (Sim)</span>
-                <span className="text-base font-extrabold text-white">
+              <div className="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800/80 min-w-0">
+                <span className="text-[10px] text-slate-500 uppercase block truncate">Avg Rolls (Sim)</span>
+                <span className="text-sm sm:text-base font-extrabold text-white truncate block">
                   {simulationStats.avgRolls}
                 </span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">
+                <span className="text-[10px] text-slate-400 block mt-0.5 truncate">
                   Min: {simulationStats.minRolls} | Max: {simulationStats.maxRolls}
                 </span>
               </div>
 
-              <div className="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800/80">
-                <span className="text-[10px] text-slate-500 uppercase block">Avg Cost (Sim)</span>
-                <span className="text-base font-extrabold text-amber-400">
+              <div className="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800/80 min-w-0">
+                <span className="text-[10px] text-slate-500 uppercase block truncate">Avg Cost (Sim)</span>
+                <span className="text-sm sm:text-base font-extrabold text-amber-400 truncate block">
                   {formatSilver(simulationStats.avgCost)}
                 </span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">
+                <span className="text-[10px] text-slate-400 block mt-0.5 truncate">
                   P50: {formatSilver(simulationStats.medianCost)}
                 </span>
               </div>
 
-              <div className="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800/80">
-                <span className="text-[10px] text-slate-500 uppercase block">Total Net Profit</span>
+              <div className="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800/80 min-w-0">
+                <span className="text-[10px] text-slate-500 uppercase block truncate">Total Net Profit</span>
                 <span
-                  className={`text-base font-extrabold ${
+                  className={`text-sm sm:text-base font-extrabold truncate block ${
                     simulationStats.totalSimulatedProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'
                   }`}
                 >
                   {simulationStats.totalSimulatedProfit >= 0 ? '+' : ''}
                   {formatSilver(simulationStats.totalSimulatedProfit)}
                 </span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">
+                <span className="text-[10px] text-slate-400 block mt-0.5 truncate">
                   Across all {simulationStats.totalRuns} items
                 </span>
               </div>

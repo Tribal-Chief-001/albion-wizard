@@ -76,36 +76,36 @@ export const GoldMacroOracle: React.FC<GoldMacroOracleProps> = ({ cluster, goldP
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="bg-[#121826] border border-slate-800 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+      <div className="bg-[#121826] border border-slate-800 rounded-2xl p-4 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <span className="text-xs uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 flex-shrink-0">
               System 6 & 7
             </span>
-            <h2 className="text-xl font-bold text-white font-mono">
+            <h2 className="text-lg sm:text-xl font-bold text-white font-mono truncate">
               Gold Macro & Patch Front-Running Oracle
             </h2>
           </div>
-          <p className="text-xs text-slate-400 max-w-2xl">
+          <p className="text-xs text-slate-400 max-w-2xl leading-relaxed">
             Endgame billionaire-tier economics. Exploit monthly Gold/Silver inflation cycles and front-run upcoming patch balance changes before casual players notice.
           </p>
         </div>
 
-        <div className="bg-slate-900 border border-amber-500/30 rounded-xl px-4 py-2.5 text-right font-mono">
+        <div className="w-full md:w-auto bg-slate-900 border border-amber-500/30 rounded-xl px-4 py-2.5 text-left md:text-right font-mono flex-shrink-0">
           <span className="text-[10px] text-slate-400 uppercase block">Live Gold ({cluster.toUpperCase()})</span>
-          <span className="text-xl font-bold text-amber-400">1 Gold = {formatSilver(goldPrice)}</span>
+          <span className="text-lg sm:text-xl font-bold text-amber-400">1 Gold = {formatSilver(goldPrice)}</span>
         </div>
       </div>
 
       {/* Two Column Layout: Gold Macro on Left, Patch Cartel on Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
         {/* Left: Gold Macro & Inflation Hedge (5 Cols) */}
-        <div className="lg:col-span-5 bg-[#121826] border border-slate-800 rounded-2xl p-5 space-y-5">
+        <div className="lg:col-span-5 bg-[#121826] border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4 sm:space-y-5">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <h3 className="font-bold text-slate-200 text-sm flex items-center gap-2">
-              <Coins className="h-4 w-4 text-amber-400" />
+              <Coins className="h-4 w-4 text-amber-400 flex-shrink-0" />
               <span>Gold-Silver Macro Cycle</span>
             </h3>
             <span className="text-xs text-amber-400 font-mono">System 7</span>
@@ -113,7 +113,7 @@ export const GoldMacroOracle: React.FC<GoldMacroOracleProps> = ({ cluster, goldP
 
           {/* Signal Card */}
           <div
-            className={`rounded-xl p-4 border flex items-start gap-3.5 ${
+            className={`rounded-xl p-3.5 sm:p-4 border flex flex-col sm:flex-row items-start gap-3 sm:gap-3.5 ${
               !isDataAvailable
                 ? 'bg-slate-900 border-slate-700 text-slate-300'
                 : isUndervalued
@@ -128,7 +128,7 @@ export const GoldMacroOracle: React.FC<GoldMacroOracleProps> = ({ cluster, goldP
             ) : (
               <ArrowUpRight className="h-6 w-6 text-amber-400 flex-shrink-0 mt-0.5" />
             )}
-            <div>
+            <div className="min-w-0">
               <div className="font-bold text-sm">
                 {!isDataAvailable
                   ? 'Macro Signal: AWAITING LIVE DATA'
@@ -147,16 +147,16 @@ export const GoldMacroOracle: React.FC<GoldMacroOracleProps> = ({ cluster, goldP
           </div>
 
           {/* Key Indicators */}
-          <div className="space-y-2.5 text-xs">
-            <div className="bg-slate-950/70 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
+          <div className="space-y-2 text-xs">
+            <div className="bg-slate-950/70 border border-slate-800 p-3 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
               <span className="text-slate-400">30-Day Moving Average:</span>
               <span className="font-mono font-bold text-slate-200">{formatSilver(historicalBaseline)} Silver</span>
             </div>
-            <div className="bg-slate-950/70 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
+            <div className="bg-slate-950/70 border border-slate-800 p-3 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
               <span className="text-slate-400">Current Premium Cycle Phase:</span>
               <span className="font-mono font-bold text-emerald-400">Mid-Cycle Stability</span>
             </div>
-            <div className="bg-slate-950/70 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
+            <div className="bg-slate-950/70 border border-slate-800 p-3 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
               <span className="text-slate-400">Historical Long-Term Trend:</span>
               <span className="font-mono font-bold text-amber-400">+12% Annual Silver Inflation</span>
             </div>
@@ -172,16 +172,16 @@ export const GoldMacroOracle: React.FC<GoldMacroOracleProps> = ({ cluster, goldP
         </div>
 
         {/* Right: Patch Balance Front-Running Cartel (7 Cols) */}
-        <div className="lg:col-span-7 bg-[#121826] border border-slate-800 rounded-2xl p-5 space-y-4">
+        <div className="lg:col-span-7 bg-[#121826] border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <h3 className="font-bold text-slate-200 text-sm flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-amber-400" />
+              <Sparkles className="h-4 w-4 text-amber-400 flex-shrink-0" />
               <span>Staging & Patch Balance Hoarding Targets</span>
             </h3>
-            <span className="text-xs text-amber-400 font-mono">System 6</span>
+            <span className="text-xs text-amber-400 font-mono flex-shrink-0">System 6</span>
           </div>
 
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-400 leading-relaxed">
             Detected weapon/armor balance shifts from Staging Server tests. Hoard these items at baseline prices before patch deployment:
           </p>
 
@@ -191,16 +191,16 @@ export const GoldMacroOracle: React.FC<GoldMacroOracleProps> = ({ cluster, goldP
               return (
                 <div
                   key={target.name}
-                  className="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 hover:border-slate-700 transition-all text-xs space-y-2"
+                  className="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 hover:border-slate-700 transition-all text-xs space-y-2 min-w-0"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-white text-sm">{target.name}</span>
-                      <span className="text-[10px] uppercase font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-bold text-white text-sm truncate">{target.name}</span>
+                      <span className="text-[10px] uppercase font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 flex-shrink-0">
                         {target.changeType}
                       </span>
                     </div>
-                    <span className="text-emerald-400 font-mono font-bold text-xs">
+                    <span className="text-emerald-400 font-mono font-bold text-xs flex-shrink-0">
                       {target.expectedSurge}
                     </span>
                   </div>
@@ -209,15 +209,15 @@ export const GoldMacroOracle: React.FC<GoldMacroOracleProps> = ({ cluster, goldP
                     {target.changeDetails}
                   </p>
 
-                  <div className="bg-slate-900 border border-slate-800/80 rounded-lg p-2.5 flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 min-w-0">
+                  <div className="bg-slate-900 border border-slate-800/80 rounded-lg p-2 sm:p-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 min-w-0 flex-1">
                       <span className="text-[10px] text-slate-500 uppercase font-semibold flex-shrink-0">Target:</span>
                       <span className="font-mono text-amber-300 text-xs truncate">{target.hoardTarget}</span>
                     </div>
 
                     <button
                       onClick={() => handleCopyTarget(target.hoardTarget)}
-                      className="flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all text-[11px] flex-shrink-0"
+                      className="flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all text-[11px] flex-shrink-0 min-h-[34px]"
                     >
                       {isTargetCopied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />}
                       <span>{isTargetCopied ? 'Copied' : 'Copy'}</span>
