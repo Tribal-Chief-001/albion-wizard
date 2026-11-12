@@ -2,6 +2,7 @@ import React from 'react';
 import { Cluster, NavigationTab } from '../types';
 import { Coins, Bell, BellOff, Crown, Globe, ShieldAlert, Wand2, Truck, Zap, Flame, TrendingUp, Dices } from 'lucide-react';
 import { formatSilver } from '../utils/quality';
+import { ClockWidget } from './ClockWidget';
 
 interface NavbarProps {
   cluster: Cluster;
@@ -95,7 +96,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Row 2 on Mobile / Right Controls on Desktop (md+) */}
-        <div className="flex items-center justify-between md:justify-end gap-1.5 md:gap-2 text-xs w-full md:w-auto min-w-0">
+        <div className="flex items-center justify-between md:justify-end gap-1 sm:gap-1.5 md:gap-2 text-xs w-full md:w-auto min-w-0">
           {/* Cluster Switcher */}
           <div className="flex items-center gap-0.5 sm:gap-1 bg-slate-900 border border-slate-700/80 rounded-lg p-0.5 text-xs min-h-[36px] flex-shrink-0">
             <Globe className="h-3.5 w-3.5 text-slate-400 ml-1 sm:ml-1.5 hidden md:block flex-shrink-0" />
@@ -137,6 +138,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Crown className={`h-3.5 w-3.5 flex-shrink-0 ${hasPremium ? 'text-amber-400' : 'text-slate-400'}`} />
             <span>{hasPremium ? '4% Prem' : '8% Free'}</span>
           </button>
+
+          {/* Top-Right Live Clock & Timezone Selector */}
+          <ClockWidget />
 
           {/* Desktop-only Transport Run Cart Button (Hidden on Mobile < md) */}
           <button

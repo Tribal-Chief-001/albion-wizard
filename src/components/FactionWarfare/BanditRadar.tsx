@@ -8,6 +8,7 @@ import {
   ServerSchedule,
 } from '../../data/factionData';
 import { playBanditFanfare } from '../../utils/audio';
+import { useTimezone } from '../../context/TimezoneContext';
 import {
   Clock,
   Volume2,
@@ -18,6 +19,7 @@ import {
   Radio,
   Server,
   Zap,
+  Globe,
 } from 'lucide-react';
 
 interface BanditRadarProps {
@@ -26,6 +28,8 @@ interface BanditRadarProps {
 }
 
 export const BanditRadar: React.FC<BanditRadarProps> = ({ cluster, audioEnabled = true }) => {
+  const { currentTime, timezone, formatTime: formatClockTime, convertUtcToTz, activeOption } = useTimezone();
+
   // Elapsed time in minutes since previous event ended (default 225m = 3h 45m)
   const [elapsedMinutes, setElapsedMinutes] = useState<number>(225);
   const [isAudioMuted, setIsAudioMuted] = useState<boolean>(!audioEnabled);
@@ -38,18 +42,7 @@ export const BanditRadar: React.FC<BanditRadarProps> = ({ cluster, audioEnabled 
   const [isBanditActive, setIsBanditActive] = useState<boolean>(false);
   const [activeSecondsElapsed, setActiveSecondsElapsed] = useState<number>(0);
 
-  // Live UTC Clock
-  const [currentUtc, setCurrentUtc] = useState<Date>(new Date());
-
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // Live UTC Clock ticking
-  useEffect(() => {
-    const clockInterval = setInterval(() => {
-      setCurrentUtc(new Date());
-    }, 1000);
-    return () => clearInterval(clockInterval);
-  }, []);
 
   // Sync audio mute prop
   useEffect(() => {
@@ -134,7 +127,7 @@ export const BanditRadar: React.FC<BanditRadarProps> = ({ cluster, audioEnabled 
   }, [elapsedMinutes, isWarningActive, isBanditActive]);
 
   // Format MM:SS helper
-  const formatTime = (totalSecs: number) => {
+  const formatCountdown = (totalSecs: number) => {
     const mins = Math.floor(totalSecs / 60);
     const secs = totalSecs % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
@@ -221,19 +214,50 @@ export const BanditRadar: React.FC<BanditRadarProps> = ({ cluster, audioEnabled 
     return SERVER_SCHEDULES.find((s) => s.cluster === cluster) || SERVER_SCHEDULES[0];
   }, [cluster]);
 
-  // UTC time string
-  const currentUtcString = currentUtc.toUTCString().split(' ')[4] || '00:00:00';
+  // Synchronized UTC & converted time strings
+  const currentUtcString = formatClockTime(currentTime, 'UTC', true);
+  const currentConvertedString = formatClockTime(currentTime, timezone, true);
 
   // Calculate time until next maintenance
   const maintenanceCountdown = useMemo(() => {
-    const nowUtcMins = currentUtc.getUTCHours() * 60 + currentUtc.getUTCMinutes();
+    const nowUtcMins = currentTime.getUTCHours() * 60 + currentTime.getUTCMinutes();
     const maintMins = activeSchedule.maintenanceHourUtc * 60 + activeSchedule.maintenanceMinuteUtc;
     let diff = maintMins - nowUtcMins;
     if (diff < 0) diff += 24 * 60;
     const h = Math.floor(diff / 60);
     const m = diff % 60;
     return `${h}h ${m}m`;
-  }, [currentUtc, activeSchedule]);
+  }, [currentTime, activeSchedule]);
+
+  // Projected bandit roll window timestamps based on elapsedMinutes from currentTime
+  const lastEndedDate = useMemo(() => {
+    return new Date(currentTime.getTime() - elapsedMinutes * 60 * 1000);
+  }, [currentTime, elapsedMinutes]);
+
+  const projectedWindows = useMemo(() => {
+    const lockoutEnd = new Date(lastEndedDate.getTime() + 150 * 60 * 1000);
+    const medianPeak = new Date(lastEndedDate.getTime() + 255 * 60 * 1000);
+    const overdueLimit = new Date(lastEndedDate.getTime() + 330 * 60 * 1000);
+
+    return {
+      lastEnded: {
+        utc: formatClockTime(lastEndedDate, 'UTC', false),
+        converted: formatClockTime(lastEndedDate, timezone, false),
+      },
+      lockoutEnd: {
+        utc: formatClockTime(lockoutEnd, 'UTC', false),
+        converted: formatClockTime(lockoutEnd, timezone, false),
+      },
+      medianPeak: {
+        utc: formatClockTime(medianPeak, 'UTC', false),
+        converted: formatClockTime(medianPeak, timezone, false),
+      },
+      overdueLimit: {
+        utc: formatClockTime(overdueLimit, 'UTC', false),
+        converted: formatClockTime(overdueLimit, timezone, false),
+      },
+    };
+  }, [lastEndedDate, currentTime, timezone, formatClockTime]);
 
   return (
     <div className="space-y-4 w-full min-w-0 max-w-full">
@@ -331,7 +355,7 @@ export const BanditRadar: React.FC<BanditRadarProps> = ({ cluster, audioEnabled 
                 <>
                   <AlertTriangle className="h-7 w-7 text-rose-500 animate-bounce mb-1" />
                   <span className="text-3xl font-black font-mono text-rose-400 tracking-tight">
-                    {formatTime(warningSecondsLeft)}
+                    {formatCountdown(warningSecondsLeft)}
                   </span>
                   <span className="text-[10px] uppercase font-bold text-rose-300 mt-0.5">
                     15M Warning Ticking
@@ -341,7 +365,7 @@ export const BanditRadar: React.FC<BanditRadarProps> = ({ cluster, audioEnabled 
                 <>
                   <Zap className="h-7 w-7 text-emerald-400 animate-pulse mb-1" />
                   <span className="text-3xl font-black font-mono text-emerald-400 tracking-tight">
-                    {formatTime(activeSecondsElapsed)}
+                    {formatCountdown(activeSecondsElapsed)}
                   </span>
                   <span className="text-[10px] uppercase font-bold text-emerald-300 mt-0.5">
                     Bandit Active / 60m
@@ -469,6 +493,99 @@ export const BanditRadar: React.FC<BanditRadarProps> = ({ cluster, audioEnabled 
                 </button>
               ))}
             </div>
+
+            {/* Real-Time Projected Roll Windows (UTC & Converted Timezone) */}
+            <div className="pt-2 border-t border-slate-800/80">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-mono text-slate-400 flex items-center gap-1.5 font-bold uppercase tracking-wide">
+                  <Clock className="h-3.5 w-3.5 text-amber-400" />
+                  <span>Projected Roll Windows (UTC & {activeOption.shortLabel})</span>
+                </span>
+                <span className="text-[10px] font-mono text-slate-500">
+                  Last Ended: {projectedWindows.lastEnded.utc} UTC ({projectedWindows.lastEnded.converted})
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                {/* Lockout Window */}
+                <div
+                  className={`p-2.5 rounded-xl border transition-all ${
+                    elapsedMinutes < 150
+                      ? 'bg-blue-500/10 border-blue-500/40 text-blue-300'
+                      : 'bg-slate-900/60 border-slate-800/80 text-slate-400'
+                  }`}
+                >
+                  <div className="flex items-center justify-between text-[11px] mb-1">
+                    <span className="font-semibold text-slate-300">Lockout (150m)</span>
+                    <span
+                      className={`font-mono text-[10px] px-1.5 py-0.2 rounded font-semibold ${
+                        elapsedMinutes < 150
+                          ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                          : 'bg-slate-800 text-slate-500'
+                      }`}
+                    >
+                      {elapsedMinutes < 150 ? `in ${150 - elapsedMinutes}m` : 'Expired'}
+                    </span>
+                  </div>
+                  <div className="font-mono text-xs font-bold text-white flex items-baseline justify-between">
+                    <span>{projectedWindows.lockoutEnd.utc} <span className="text-[10px] text-amber-400">UTC</span></span>
+                    <span className="text-[11px] text-slate-300">{projectedWindows.lockoutEnd.converted} <span className="text-[10px] text-emerald-400">{activeOption.shortLabel}</span></span>
+                  </div>
+                </div>
+
+                {/* Median Window (255m) */}
+                <div
+                  className={`p-2.5 rounded-xl border transition-all ${
+                    elapsedMinutes >= 150 && elapsedMinutes < 270
+                      ? 'bg-amber-500/10 border-amber-500/40 text-amber-300'
+                      : 'bg-slate-900/60 border-slate-800/80 text-slate-400'
+                  }`}
+                >
+                  <div className="flex items-center justify-between text-[11px] mb-1">
+                    <span className="font-semibold text-slate-300">Median Peak (255m)</span>
+                    <span
+                      className={`font-mono text-[10px] px-1.5 py-0.2 rounded font-semibold ${
+                        elapsedMinutes < 255
+                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                          : 'bg-slate-800 text-slate-500'
+                      }`}
+                    >
+                      {elapsedMinutes < 255 ? `in ${255 - elapsedMinutes}m` : 'Passed'}
+                    </span>
+                  </div>
+                  <div className="font-mono text-xs font-bold text-white flex items-baseline justify-between">
+                    <span>{projectedWindows.medianPeak.utc} <span className="text-[10px] text-amber-400">UTC</span></span>
+                    <span className="text-[11px] text-slate-300">{projectedWindows.medianPeak.converted} <span className="text-[10px] text-emerald-400">{activeOption.shortLabel}</span></span>
+                  </div>
+                </div>
+
+                {/* Overdue Ceiling (330m) */}
+                <div
+                  className={`p-2.5 rounded-xl border transition-all ${
+                    elapsedMinutes >= 270
+                      ? 'bg-rose-500/10 border-rose-500/40 text-rose-300'
+                      : 'bg-slate-900/60 border-slate-800/80 text-slate-400'
+                  }`}
+                >
+                  <div className="flex items-center justify-between text-[11px] mb-1">
+                    <span className="font-semibold text-slate-300">Overdue (330m)</span>
+                    <span
+                      className={`font-mono text-[10px] px-1.5 py-0.2 rounded font-semibold ${
+                        elapsedMinutes < 330
+                          ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                          : 'bg-rose-500 text-slate-950 font-bold'
+                      }`}
+                    >
+                      {elapsedMinutes < 330 ? `in ${330 - elapsedMinutes}m` : `Overdue (+${elapsedMinutes - 330}m)`}
+                    </span>
+                  </div>
+                  <div className="font-mono text-xs font-bold text-white flex items-baseline justify-between">
+                    <span>{projectedWindows.overdueLimit.utc} <span className="text-[10px] text-amber-400">UTC</span></span>
+                    <span className="text-[11px] text-slate-300">{projectedWindows.overdueLimit.converted} <span className="text-[10px] text-emerald-400">{activeOption.shortLabel}</span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Weibull Hazard Math Breakdown Table */}
@@ -489,6 +606,7 @@ export const BanditRadar: React.FC<BanditRadarProps> = ({ cluster, audioEnabled 
                     <th className="py-2 px-3">Elapsed</th>
                     <th className="py-2 px-3">&Delta;t Post-Lockout</th>
                     <th className="py-2 px-3">State</th>
+                    <th className="py-2 px-3">Est. Window (UTC / {activeOption.shortLabel})</th>
                     <th className="py-2 px-3 text-right">Probability F(t)</th>
                   </tr>
                 </thead>
@@ -497,42 +615,49 @@ export const BanditRadar: React.FC<BanditRadarProps> = ({ cluster, audioEnabled 
                     <td className="py-1.5 px-3">0h - 2h 30m</td>
                     <td className="py-1.5 px-3">0 min</td>
                     <td className="py-1.5 px-3 text-blue-400">LOCKED_COOLDOWN</td>
+                    <td className="py-1.5 px-3 text-slate-400 font-mono">Until {projectedWindows.lockoutEnd.utc} UTC ({projectedWindows.lockoutEnd.converted})</td>
                     <td className="py-1.5 px-3 text-right font-bold">0.0%</td>
                   </tr>
                   <tr className={elapsedMinutes > 150 && elapsedMinutes <= 180 ? 'bg-amber-500/10 font-bold text-amber-300' : ''}>
                     <td className="py-1.5 px-3">3h 00m</td>
                     <td className="py-1.5 px-3">30 min</td>
                     <td className="py-1.5 px-3 text-amber-400">ROLLING (Early)</td>
+                    <td className="py-1.5 px-3 text-slate-400 font-mono">{formatClockTime(new Date(lastEndedDate.getTime() + 180 * 60000), 'UTC', false)} UTC ({formatClockTime(new Date(lastEndedDate.getTime() + 180 * 60000), timezone, false)})</td>
                     <td className="py-1.5 px-3 text-right">4.8%</td>
                   </tr>
                   <tr className={elapsedMinutes > 180 && elapsedMinutes <= 210 ? 'bg-amber-500/10 font-bold text-amber-300' : ''}>
                     <td className="py-1.5 px-3">3h 30m</td>
                     <td className="py-1.5 px-3">60 min</td>
                     <td className="py-1.5 px-3 text-amber-400">ROLLING</td>
+                    <td className="py-1.5 px-3 text-slate-400 font-mono">{formatClockTime(new Date(lastEndedDate.getTime() + 210 * 60000), 'UTC', false)} UTC ({formatClockTime(new Date(lastEndedDate.getTime() + 210 * 60000), timezone, false)})</td>
                     <td className="py-1.5 px-3 text-right">23.5%</td>
                   </tr>
                   <tr className={elapsedMinutes > 210 && elapsedMinutes <= 240 ? 'bg-orange-500/10 font-bold text-orange-300' : ''}>
                     <td className="py-1.5 px-3">4h 00m</td>
                     <td className="py-1.5 px-3">90 min</td>
                     <td className="py-1.5 px-3 text-orange-400">MEDIAN WINDOW</td>
+                    <td className="py-1.5 px-3 text-slate-400 font-mono">{formatClockTime(new Date(lastEndedDate.getTime() + 240 * 60000), 'UTC', false)} UTC ({formatClockTime(new Date(lastEndedDate.getTime() + 240 * 60000), timezone, false)})</td>
                     <td className="py-1.5 px-3 text-right">47.6%</td>
                   </tr>
                   <tr className={elapsedMinutes > 240 && elapsedMinutes <= 270 ? 'bg-orange-500/10 font-bold text-orange-300' : ''}>
                     <td className="py-1.5 px-3">4h 15m</td>
                     <td className="py-1.5 px-3">105 min (&lambda;)</td>
                     <td className="py-1.5 px-3 text-orange-400">HIGH_PROBABILITY</td>
+                    <td className="py-1.5 px-3 text-orange-300 font-mono font-bold">{projectedWindows.medianPeak.utc} UTC ({projectedWindows.medianPeak.converted})</td>
                     <td className="py-1.5 px-3 text-right font-bold text-orange-400">62.1%</td>
                   </tr>
                   <tr className={elapsedMinutes > 270 && elapsedMinutes <= 300 ? 'bg-red-500/10 font-bold text-red-300' : ''}>
                     <td className="py-1.5 px-3">5h 00m</td>
                     <td className="py-1.5 px-3">150 min</td>
                     <td className="py-1.5 px-3 text-red-400">IMMINENT</td>
+                    <td className="py-1.5 px-3 text-slate-400 font-mono">{formatClockTime(new Date(lastEndedDate.getTime() + 300 * 60000), 'UTC', false)} UTC ({formatClockTime(new Date(lastEndedDate.getTime() + 300 * 60000), timezone, false)})</td>
                     <td className="py-1.5 px-3 text-right font-bold text-red-400">91.8%</td>
                   </tr>
                   <tr className={elapsedMinutes > 300 ? 'bg-red-500/10 font-bold text-red-300' : ''}>
                     <td className="py-1.5 px-3">5h 30m+</td>
                     <td className="py-1.5 px-3">180 min</td>
                     <td className="py-1.5 px-3 text-red-400">OVERDUE</td>
+                    <td className="py-1.5 px-3 text-rose-300 font-mono font-bold">{projectedWindows.overdueLimit.utc} UTC ({projectedWindows.overdueLimit.converted})</td>
                     <td className="py-1.5 px-3 text-right font-bold text-rose-400">98.4%</td>
                   </tr>
                 </tbody>
@@ -551,17 +676,25 @@ export const BanditRadar: React.FC<BanditRadarProps> = ({ cluster, audioEnabled 
               Albion Online Regional Physical Server Schedules
             </h4>
           </div>
-          <div className="flex items-center gap-2 text-xs font-mono">
-            <span className="text-slate-500">Live Server Clock:</span>
+          <div className="flex items-center gap-2 text-xs font-mono flex-wrap">
+            <Globe className="h-3.5 w-3.5 text-slate-400 hidden sm:block" />
+            <span className="text-slate-500">Live Clocks:</span>
             <span className="px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-amber-300 font-bold">
               {currentUtcString} UTC
             </span>
+            {timezone !== 'UTC' && (
+              <span className="px-2 py-0.5 rounded bg-slate-900 border border-emerald-500/40 text-emerald-300 font-bold">
+                {currentConvertedString} {activeOption.shortLabel}
+              </span>
+            )}
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {SERVER_SCHEDULES.map((sched: ServerSchedule) => {
             const isCurrentCluster = sched.cluster === cluster;
+            const converted = convertUtcToTz(sched.maintenanceHourUtc, sched.maintenanceMinuteUtc, timezone);
+            const browserTz = convertUtcToTz(sched.maintenanceHourUtc, sched.maintenanceMinuteUtc, 'LOCAL');
             return (
               <div
                 key={sched.cluster}
@@ -580,12 +713,26 @@ export const BanditRadar: React.FC<BanditRadarProps> = ({ cluster, audioEnabled 
                   )}
                 </div>
 
-                <div className="space-y-1 text-xs">
+                <div className="space-y-1.5 text-xs">
                   <div className="flex items-center justify-between text-slate-400">
-                    <span>Daily Maintenance:</span>
+                    <span>Daily Maintenance (UTC):</span>
                     <span className="font-mono text-amber-300 font-bold">{sched.maintenanceUtc}</span>
                   </div>
                   <div className="flex items-center justify-between text-slate-400">
+                    <span>Converted ({activeOption.shortLabel}):</span>
+                    <span className="font-mono text-emerald-400 font-bold">
+                      {converted.formatted} {converted.offsetLabel && <span className="text-[10px] text-amber-400 ml-0.5">{converted.offsetLabel}</span>}
+                    </span>
+                  </div>
+                  {timezone !== 'LOCAL' && (
+                    <div className="flex items-center justify-between text-slate-500 text-[11px]">
+                      <span>Browser Time:</span>
+                      <span className="font-mono text-slate-300">
+                        {browserTz.formatted} {browserTz.offsetLabel && <span className="text-[10px] text-amber-400 ml-0.5">{browserTz.offsetLabel}</span>}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between text-slate-400 pt-0.5">
                     <span>Next Downtime In:</span>
                     <span className="font-mono text-slate-200">
                       {isCurrentCluster ? maintenanceCountdown : '~Scheduled'}
