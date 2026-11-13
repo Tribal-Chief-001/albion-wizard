@@ -32,7 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenManifest,
 }) => {
   return (
-    <header className="border-b border-slate-800 bg-[#0e131f]/95 backdrop-blur sticky top-0 z-40 px-2 sm:px-4 lg:px-8 py-1.5 sm:py-2.5 w-full max-w-full overflow-hidden">
+    <header className="border-b border-slate-800 bg-[#0e131f]/95 backdrop-blur sticky top-0 z-40 px-2 sm:px-4 lg:px-8 py-1.5 sm:py-2.5 w-full max-w-full">
       {/* Top Utility Bar */}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 md:gap-3 w-full min-w-0">
         {/* Row 1 on Mobile: Brand + Mobile Quick Actions (Transport & Sound) */}
